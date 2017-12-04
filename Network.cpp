@@ -8,7 +8,7 @@
 #include "Network.h"
 #include "TrafficGenerator.h"
 #include "Event.h"
-#include "ResourceAssignment.h"
+#include "ResourceAssignment_FullyFlex.h"
 
 
 

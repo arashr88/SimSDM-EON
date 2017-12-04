@@ -81,14 +81,14 @@ int main (int argc, char *argv[]) {
 	double BlockingProbability = (double) network->NumofFailedRequests / (double) network->NumofRequests;
 	fstream fp;
 	fp.open ("Plot.txt", fstream::app);
-	string plot = to_string (network->NumofCores) + ' ' + to_string (BlockingProbability) + ' ' + to_string (Erlang) + '\n'; 
+	string plot = to_string (network->NumofCores) + ' ' + to_string (BlockingProbability) + ' ' + to_string (Erlang) + ' ' + to_string (network->MaxNumofTransponders) + '\n'; 
 	fp << plot;
 	fp.close ();
 
 	EndFlag = 1;
 	pthread_join (timer, NULL);
 	double TimeSpent = (double)((EndPoint - StartPoint) / CLOCKS_PER_SEC);
-	cout << "Time spent in \"ms\" is " << (EndPoint - StartPoint) / 1000.00 << endl;
+	cout << "Time spent in \"ms\" is " << TimeSpent / 1000.00 << endl;
 	cout << "************************************************************" << endl;
 
 	return 1;

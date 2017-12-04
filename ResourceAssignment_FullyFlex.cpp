@@ -1,0 +1,306 @@
+/**************************************************
+ * First-Fit  
+ **************************************************/
+// #define DEBUG_print_resource_state_on_the_path
+// #define DEBUG_in_check_availability_link
+#define DEBUG_print_AvailableSpecSlots
+// #define DEBUG_collect_eventid_of_blocked_requests //need to collaberate with debug_print_eventid_of_blocked_requests
+
+#define LOCK_use_Modulation_Formats
+#define PRINT_allocation_block_release
+
+#ifdef LOCK_use_Modulation_Formats
+#include "ModulationFormats.h"
+#endif
+#ifndef LOCK_use_Modulation_Formats
+#include "ModulationFormats1.h"
+#endif
+
+#include <iostream>
+#include "ResourceAssignment_FullyFlex.h"
+#include <string>
+#include <list>
+ 
+
+//Used event to represent Event instance
+void ResourceAssignment::check_availability_source (unsigned int predecessor, unsigned int successor, CircuitRequest * circuitRequest) {
+	unsigned int AvailableCounter = 0;
+	vector<int> HAvailableSpecSlots;
+
+	AvailableSpecSlots.clear ();
+	for (int c = 0; c < network->NumofCores; c++) {
+		for (int i = 0; i < NumofSpectralSlots; i++) {
+			if (network->SpectralSlots[predecessor][successor][c][i] == false) {
+				HAvailableSpecSlots.push_back (c);
+				HAvailableSpecSlots.push_back (i);
+				AvailableSpecSlots.push_back (HAvailableSpecSlots);
+				HAvailableSpecSlots.clear ();	
+			}
+		}
+	}	
+
+
+}
+
+
+//Used event to represent Event instance
+void ResourceAssignment::check_availability_link (vector<int> * CircuitRoute) {
+	unsigned int  NumofAllocatedSpecSlots;
+	vector<int> AllocSegment;
+	vector<int> HAssignedSpectralSection;
+	vector<int> HAvailSS;
+	bool AvailableFlag = true;
+
+	// #ifdef DEBUG_in_check_availability_link
+	// cout << "The checked link is between node " << CircuitRoute[]<< " and " << successor << endl; 
+	// cout << "The checked SpectralSlots are between  " << AvailableSpecSlots[i][0] << " and " << AvailableSpecSlots[i][2] << endl;
+	// #endif
+
+	list< vector<int> >::iterator i;
+
+	for (int r = 2; r < CircuitRoute->size (); r++) {
+		for (i = AvailableSpecSlots.begin (); i != AvailableSpecSlots.end (); i++) {
+			AvailableFlag = true;
+			if (network->SpectralSlots[CircuitRoute->at (r - 1)][CircuitRoute->at (r)][i->at (0)][i->at (1)] == true) {
+				AvailableSpecSlots.erase (i);
+			}
+		}
+	}
+
+	#ifdef DEBUG_in_check_availability_link
+	cout << endl;
+	#endif
+}
+
+
+void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
+	RoutingTable routingTable (network);	
+
+	vector<int> CircuitRoute;
+	bool AvailableFlag = true;
+	vector< vector<int> > AssignedSpectralSection;
+	vector<int> HAssignedSpectralSection;
+	vector<int> HAssignedSS;
+	vector< vector<int> > AssignedSS;
+	vector< vector<int> > TempSS;
+	string MF = "BPSK";
+	int TempCore = -1;
+	int TempSpecSlot = -1;
+	unsigned int core;
+
+	CircuitRoute = routingTable.get_shortest_path (circuitRequest->Src, circuitRequest->Dest);
+
+	#ifdef DEBUG_print_resource_state_on_the_path
+	for (int i = 0; i < CircuitRoute.size (); i++) {
+		cout << CircuitRoute[i] << ' ';
+	}
+	cout << endl;
+	cout << "Start to print resources on the path before allocation" << endl;
+	for (int i = 1; i < CircuitRoute.size (); i++) {
+		cout << "On link " << CircuitRoute[i - 1] << " to " << CircuitRoute[i] << endl;
+		for (int c = 0; c < network->NumofCores; c++) {
+			for (int j = 0; j < NumofSpectralSlots; j++) {
+				cout <<  network->SpectralSlots[CircuitRoute[i - 1]][CircuitRoute[i]][c][j] << ' ';
+			}
+			cout << endl;
+		}
+	}
+	#endif
+
+	#ifdef LOCK_use_Modulation_Formats
+	ModulationFormats modulationFormats (circuitRequest, network);
+	MF = modulationFormats.mf_chosen (CircuitRoute, &circuitRequest->OccupiedSpectralSlots);
+	#endif
+
+	// Calculate possible SpectralSlotSections on the link between source and its successor
+	check_availability_source (CircuitRoute[0], CircuitRoute[1], circuitRequest);
+
+	#ifdef DEBUG_print_AvailableSpecSlots
+	cout << "Start to print AvailableSpecSlots" << endl;
+	list< vector<int> >::iterator i;
+	for (i = AvailableSpecSlots.begin (); i != AvailableSpecSlots.end (); i++) {
+		for (int j = 0; j < i->size (); j++) {
+			cout << i->at (j) << ' ';
+		}
+		cout << "    ";
+	}
+	cout << endl;
+	#endif
+
+	if (circuitRequest->OccupiedSpectralSlots > AvailableSpecSlots.size ()) AvailableFlag = false;
+	else {
+		check_availability_link (&CircuitRoute);
+		if (circuitRequest->OccupiedSpectralSlots > AvailableSpecSlots.size ()) {
+cout << "$1$" << endl;
+			AvailableFlag = false;
+		}
+		else {
+cout << "$2$" << endl;
+			list< vector<int> >::iterator i;
+			int counter = circuitRequest->OccupiedSpectralSlots;
+			for (i = AvailableSpecSlots.begin (); i != AvailableSpecSlots.end (); i++) {
+cout << "In the loop " << endl;
+cout << i->at (0) << ' ' << i->at(1) << endl;
+				if (AssignedSS.empty ()) {
+cout << "$2-1$" << endl;
+					AssignedSS.push_back (*i);
+					HAssignedSpectralSection.push_back (i->at (0));
+					HAssignedSpectralSection.push_back (i->at (1));
+				}
+				else {
+cout << "$2-2$" << endl;
+					vector<int> Temp; 
+					Temp = AssignedSS.back ();
+cout << "Temp "<< Temp[0] << ' ' << Temp[1] + 1 << endl;
+cout << "iterator " << i->at (0) << ' ' << i->at (1) << endl; 
+					if ((i->at (1) == Temp[1] + 1) && (i->at (0) == Temp[0])) {
+cout << "$2-2-1$" << endl;
+						AssignedSS.push_back (*i);
+						HAssignedSpectralSection.push_back (i->at (1));
+					}
+					else {
+cout << "$2-2-2$" << endl; 
+						if ((HAssignedSpectralSection[2] - HAssignedSpectralSection[1] + 1) >= 2) {
+cout << "$2-2-2-1$" << endl;
+							if (counter >= (HAssignedSpectralSection[2] - HAssignedSpectralSection[1] + 1)) {
+cout << "$2-2-2-1-1$" << endl;
+								AssignedSpectralSection.push_back (HAssignedSpectralSection);
+								counter = counter - (HAssignedSpectralSection[2] - HAssignedSpectralSection[1]);
+								HAssignedSpectralSection.clear ();
+								AssignedSS.push_back (*i);
+								HAssignedSpectralSection.push_back (i->at (0));
+								HAssignedSpectralSection.push_back (i->at (1));
+							}
+							else {
+cout << "$2-2-2-1-2$" << endl;
+								HAssignedSpectralSection.push_back (i->at (1) + counter - 1);
+							}
+						}
+						else {
+cout << "$2-2-2-2$" << endl;
+							HAssignedSpectralSection.clear ();
+							AssignedSS.push_back (*i);
+							HAssignedSpectralSection.push_back (i->at (0));
+							HAssignedSpectralSection.push_back (i->at (1));
+						}
+					}
+				}
+				cout << "Nums " << counter << ' ' << AssignedSS.size () << endl;
+				if (circuitRequest->OccupiedSpectralSlots == AssignedSS.size ()) break; 
+			}
+		}
+
+		if (AvailableFlag == false) {
+			network->NumofDoneRequests++;
+
+			#ifdef DEBUG_collect_EventID_of_blocked_requests
+			network->BlockedRequests.push_back (circuitRequest->EventID);
+			#endif
+
+			#ifdef PRINT_allocation_block_release
+			cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << endl;
+			cout << "Request " << circuitRequest->EventID << " is blocked" << endl;
+			cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << endl << endl;
+			#endif
+
+			network->NumofFailedRequests++;
+		}
+		else if (AvailableFlag == true) {
+
+			#ifdef PRINT_allocation_block_release
+			cout << "------------------------------------------------------------" << endl;
+			cout << "Request ID: " << circuitRequest->EventID << "\tStart: " << circuitRequest->EventTime << "\tEnd: " << circuitRequest->StartTime + circuitRequest->Duration << endl;
+			cout << "Source: " << circuitRequest->Src << "  Destination: " << circuitRequest->Dest << "  ModulationFormats: " << MF << endl;
+			cout << "Path: ";
+			for(unsigned int t = 0; t < CircuitRoute.size()-1; t++)
+				cout << CircuitRoute.at(t) << " --> ";
+			cout << CircuitRoute.at (CircuitRoute.size() - 1) << endl;
+			for (int i = 0; i < AssignedSpectralSection.size (); i++) {
+				cout << "Core: " << AssignedSpectralSection[i][0] << "  Spectral Section: " << AssignedSpectralSection[i][1] << " to " << AssignedSpectralSection[i][2] << endl; 
+			}
+			cout << "------------------------------------------------------------" << endl << endl;
+			#endif
+
+			CircuitRelease * circuitRelease;
+			circuitRelease = new CircuitRelease (circuitRequest->EventID, CircuitRoute, AssignedSpectralSection, circuitRequest->StartTime + circuitRequest->Duration, core);
+			eventQueue->queue_insert (circuitRelease);
+
+			network->NumofTransponders++;
+			network->NumofAllocatedRequests++;
+		}
+
+		#ifdef DEBUG_print_resource_state_on_the_path
+		for (int i = 0; i < CircuitRoute.size (); i++) {
+			cout << CircuitRoute[i] << ' ';
+		}
+		cout << endl;
+		cout << "Start to print resources on the path after allocation" << endl;
+		for (int i = 1; i < CircuitRoute.size (); i++) {
+			cout << "On link " << CircuitRoute[i - 1] << " to " << CircuitRoute[i] << endl;
+			for (int c = 0; c < network->NumofCores; c++) {
+				for (int j = 0; j < NumofSpectralSlots; j++) {
+					cout <<  network->SpectralSlots[CircuitRoute[i - 1]][CircuitRoute[i]][c][j] << ' ';
+				}
+				cout << endl;
+			}
+		}
+		#endif
+	}
+}
+
+
+void ResourceAssignment::handle_releases (CircuitRelease * circuitRelease) {
+	#ifdef DEBUG_print_resource_state_on_the_path
+	for (int i = 0; i < circuitRelease->CircuitRoute.size (); i++) {
+		cout << circuitRelease->CircuitRoute[i] << ' ';
+	}
+	cout << endl;
+	cout << "Start to print resources on the path before release" << endl;
+	for (int i = 1; i < circuitRelease->CircuitRoute.size (); i++) {
+		cout << "On link " << circuitRelease->CircuitRoute[i-1] << " to " << circuitRelease->CircuitRoute[i] << endl;
+		for (int c = 0; c < network->NumofCores; c++) {
+			for (int j = 0; j < NumofSpectralSlots; j++) {
+				cout <<  network->SpectralSlots[circuitRelease->CircuitRoute[i - 1]][circuitRelease->CircuitRoute[i]][c][j] << ' ';
+			}
+			cout << endl;
+		}
+	}
+	#endif
+
+	for (int i = 1; i < circuitRelease->CircuitRoute.size (); i++) {
+		for (int j = 0; j < circuitRelease->OccupiedSpectralSection.size (); j++) {
+			for (int k = circuitRelease->OccupiedSpectralSection[i][1]; k <= circuitRelease->OccupiedSpectralSection[i][2]; k++) {
+				network->SpectralSlots[circuitRelease->CircuitRoute[i - 1]][circuitRelease->CircuitRoute[i]][circuitRelease->OccupiedSpectralSection[j][0]][k] = false;	
+			}
+		}
+	}
+	
+	network->NumofDoneRequests++;
+	network->NumofTransponders--;
+	
+	#ifdef PRINT_allocation_block_release
+	cout << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
+	cout << "Release Event: " << circuitRelease->EventID << "\tTime: " << circuitRelease->EventTime << endl;
+	for (int i = 0; i < circuitRelease->OccupiedSpectralSection.size (); i++) {
+		cout << "Core: " << circuitRelease->OccupiedSpectralSection[i][0] << "  Spectral Section: " << circuitRelease->OccupiedSpectralSection[i][0] << " to " << circuitRelease->OccupiedSpectralSection[i][1] << endl;
+	}
+	cout << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl << endl;
+	#endif
+
+	#ifdef DEBUG_print_resource_state_on_the_path
+	for (int i = 0; i < circuitRelease->CircuitRoute.size (); i++) {
+		cout << circuitRelease->CircuitRoute[i] << ' ';
+	}
+	cout << endl;
+	cout << "Start to print resources on the path after release" << endl;
+	for (int i = 1; i < circuitRelease->CircuitRoute.size (); i++) {
+		cout << "On link " << circuitRelease->CircuitRoute[i-1] << " to " << circuitRelease->CircuitRoute[i] << endl;
+		for (int c = 0; c < network->NumofCores; c++) {
+			for (int j = 0; j < NumofSpectralSlots; j++) {
+				cout <<  network->SpectralSlots[circuitRelease->CircuitRoute[i - 1]][circuitRelease->CircuitRoute[i]][c][j] << ' ';
+			}
+			cout << endl;
+		}
+	}
+	#endif
+}

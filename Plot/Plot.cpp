@@ -4,6 +4,8 @@
 #include <cstdlib>
 #include <fstream>
 
+#define NUMOFSEEDS 30
+
 using namespace std;
 
 int main () {
@@ -25,9 +27,9 @@ int main () {
 
 
 	for (unsigned int k = 0; k < Core.size (); k++) {
-		for (unsigned int i = 0; i < 10; i++) {
-			for (unsigned int l = 500; l < 1501; l = l + 100) {
-				string Cmd = Exec + ' ' + Topo + ' ' + to_string (NumofRequests) + ' ' + to_string (Core[k]) + ' ' + to_string (l * Core[k]) + " 1 " + to_string ((double) rand () / 65535);
+		for (unsigned int seed = 0; seed < NUMOFSEEDS; seed++) {
+			for (unsigned int lambda = 500; lambda < 1501; lambda = lambda + 100) {
+				string Cmd = Exec + ' ' + Topo + ' ' + to_string (NumofRequests) + ' ' + to_string (Core[k]) + ' ' + to_string (lambda * Core[k]) + " 1 " + to_string ((double) rand () / 65535);
 				// cout << Cmd << endl;
 				system (Cmd.c_str ());
 			}

@@ -1,4 +1,4 @@
-// #define DEBUG_print_new_built_Event
+#define DEBUG_print_new_built_Event
 
 #include "TrafficGenerator.h"
 

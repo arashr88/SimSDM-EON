@@ -7,6 +7,7 @@
 #include "EventQueue.h"
 
 
+#define GB 1 // Guardband
 #define NumofSpectralSlots 128
 #define MAX_OCCUPIED_SPECTRAL_SLOTS 16 
 

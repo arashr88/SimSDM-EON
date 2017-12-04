@@ -13,7 +13,7 @@ CircuitRequest::CircuitRequest (unsigned int src, unsigned int dest, double star
 }
 
 
-CircuitRelease::CircuitRelease (long long eventID, vector<int> &circuitRoute, vector<int> &occupiedSpectralSection, double releaseTime, unsigned int core) {
+CircuitRelease::CircuitRelease (long long eventID, vector<int> &circuitRoute, vector< vector<int> > &occupiedSpectralSection, double releaseTime, unsigned int core) {
 	CircuitRoute = circuitRoute;
 	OccupiedSpectralSection = occupiedSpectralSection;
 	ReleaseTime = releaseTime;
