@@ -82,6 +82,6 @@ string ModulationFormats::mf_chosen (vector<int> & shortestPath, unsigned int * 
 	// }
 
 	// To add 1 for guard band
-	*occupiedSpectralSlots = am_SpectralSlots + 1;
+	*occupiedSpectralSlots = am_SpectralSlots;
 	return MF;
 }

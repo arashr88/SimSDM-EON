@@ -1,8 +1,7 @@
 /**************************************************
  * First-Fit  
  **************************************************/
-// #define DEBUG_print_resource_state_on_the_path
-// #define DEBUG_in_check_availability_link
+#define DEBUG_print_resource_state_on_the_path
 #define DEBUG_print_AvailableSpecSlots
 // #define DEBUG_collect_eventid_of_blocked_requests //need to collaberate with debug_print_eventid_of_blocked_requests
 
@@ -17,12 +16,16 @@
 #endif
 
 #include <iostream>
-#include "ResourceAssignment_FullyFlex.h"
 #include <string>
 #include <list>
  
+// Choose One From the Allocation schemes
+// #include "ResourceAssignment"
+#include "ResourceAssignment_FullyFlex.h"
+// #include "ResourceAssignment_FullyFlex.h"
 
-//Used event to represent Event instance
+
+
 void ResourceAssignment::check_availability_source (unsigned int predecessor, unsigned int successor, CircuitRequest * circuitRequest) {
 	unsigned int AvailableCounter = 0;
 	vector<int> HAvailableSpecSlots;
@@ -37,9 +40,7 @@ void ResourceAssignment::check_availability_source (unsigned int predecessor, un
 				HAvailableSpecSlots.clear ();	
 			}
 		}
-	}	
-
-
+	}
 }
 
 
@@ -66,10 +67,6 @@ void ResourceAssignment::check_availability_link (vector<int> * CircuitRoute) {
 			}
 		}
 	}
-
-	#ifdef DEBUG_in_check_availability_link
-	cout << endl;
-	#endif
 }
 
 
@@ -83,6 +80,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 	vector<int> HAssignedSS;
 	vector< vector<int> > AssignedSS;
 	vector< vector<int> > TempSS;
+	unsigned int TempNumofTransponders = 0;
 	string MF = "BPSK";
 	int TempCore = -1;
 	int TempSpecSlot = -1;
@@ -115,6 +113,10 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 	// Calculate possible SpectralSlotSections on the link between source and its successor
 	check_availability_source (CircuitRoute[0], CircuitRoute[1], circuitRequest);
 
+
+	// if (circuitRequest->OccupiedSpectralSlots > AvailableSpecSlots.size ()) AvailableFlag = false;
+	// else {
+		check_availability_link (&CircuitRoute);
 	#ifdef DEBUG_print_AvailableSpecSlots
 	cout << "Start to print AvailableSpecSlots" << endl;
 	list< vector<int> >::iterator i;
@@ -126,10 +128,6 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 	}
 	cout << endl;
 	#endif
-
-	if (circuitRequest->OccupiedSpectralSlots > AvailableSpecSlots.size ()) AvailableFlag = false;
-	else {
-		check_availability_link (&CircuitRoute);
 		if (circuitRequest->OccupiedSpectralSlots > AvailableSpecSlots.size ()) {
 cout << "$1$" << endl;
 			AvailableFlag = false;
@@ -137,15 +135,17 @@ cout << "$1$" << endl;
 		else {
 cout << "$2$" << endl;
 			list< vector<int> >::iterator i;
-			int counter = circuitRequest->OccupiedSpectralSlots;
 			for (i = AvailableSpecSlots.begin (); i != AvailableSpecSlots.end (); i++) {
 cout << "In the loop " << endl;
-cout << i->at (0) << ' ' << i->at(1) << endl;
+cout << "The SS for checking " << i->at (0) << ' ' << i->at(1) << endl;
 				if (AssignedSS.empty ()) {
 cout << "$2-1$" << endl;
 					AssignedSS.push_back (*i);
 					HAssignedSpectralSection.push_back (i->at (0));
 					HAssignedSpectralSection.push_back (i->at (1));
+					HAssignedSpectralSection.push_back (i->at (1));
+					AssignedSpectralSection.push_back (HAssignedSpectralSection);
+					TempNumofTransponders = 1;
 				}
 				else {
 cout << "$2-2$" << endl;
@@ -156,37 +156,43 @@ cout << "iterator " << i->at (0) << ' ' << i->at (1) << endl;
 					if ((i->at (1) == Temp[1] + 1) && (i->at (0) == Temp[0])) {
 cout << "$2-2-1$" << endl;
 						AssignedSS.push_back (*i);
-						HAssignedSpectralSection.push_back (i->at (1));
+						HAssignedSpectralSection.at (2) = i->at (1);
+						AssignedSpectralSection.at (AssignedSpectralSection.size () - 1) = HAssignedSpectralSection;
 					}
 					else {
 cout << "$2-2-2$" << endl; 
-						if ((HAssignedSpectralSection[2] - HAssignedSpectralSection[1] + 1) >= 2) {
+						// if ((HAssignedSpectralSection[2] - HAssignedSpectralSection[1] + 1) >= 2) {
+						if ((HAssignedSpectralSection[2] != HAssignedSpectralSection[1])) {
 cout << "$2-2-2-1$" << endl;
-							if (counter >= (HAssignedSpectralSection[2] - HAssignedSpectralSection[1] + 1)) {
-cout << "$2-2-2-1-1$" << endl;
 								AssignedSpectralSection.push_back (HAssignedSpectralSection);
-								counter = counter - (HAssignedSpectralSection[2] - HAssignedSpectralSection[1]);
 								HAssignedSpectralSection.clear ();
+								TempNumofTransponders++;
 								AssignedSS.push_back (*i);
 								HAssignedSpectralSection.push_back (i->at (0));
 								HAssignedSpectralSection.push_back (i->at (1));
-							}
-							else {
-cout << "$2-2-2-1-2$" << endl;
-								HAssignedSpectralSection.push_back (i->at (1) + counter - 1);
-							}
+								HAssignedSpectralSection.push_back (i->at (1));
 						}
 						else {
 cout << "$2-2-2-2$" << endl;
 							HAssignedSpectralSection.clear ();
+							AssignedSS.erase (AssignedSS.end () - 1);
 							AssignedSS.push_back (*i);
 							HAssignedSpectralSection.push_back (i->at (0));
+							HAssignedSpectralSection.push_back (i->at (1));
 							HAssignedSpectralSection.push_back (i->at (1));
 						}
 					}
 				}
-				cout << "Nums " << counter << ' ' << AssignedSS.size () << endl;
-				if (circuitRequest->OccupiedSpectralSlots == AssignedSS.size ()) break; 
+				cout << "PARA " << circuitRequest->OccupiedSpectralSlots << ' ' << AssignedSS.size () << endl;
+				if ((circuitRequest->OccupiedSpectralSlots + TempNumofTransponders) == AssignedSS.size ()) {
+					network->NumofTransponders = network->NumofTransponders + TempNumofTransponders;
+					for (int j = 1; j < CircuitRoute.size (); j++) {
+						for (int i = 0; i < AssignedSS.size (); i++) {
+							network->SpectralSlots[CircuitRoute[j - 1]][CircuitRoute[j]][AssignedSS[i][0]][AssignedSS[i][1]] = true;
+						}
+					}
+					break;
+				} 
 			}
 		}
 
@@ -212,7 +218,7 @@ cout << "$2-2-2-2$" << endl;
 			cout << "Request ID: " << circuitRequest->EventID << "\tStart: " << circuitRequest->EventTime << "\tEnd: " << circuitRequest->StartTime + circuitRequest->Duration << endl;
 			cout << "Source: " << circuitRequest->Src << "  Destination: " << circuitRequest->Dest << "  ModulationFormats: " << MF << endl;
 			cout << "Path: ";
-			for(unsigned int t = 0; t < CircuitRoute.size()-1; t++)
+			for(unsigned int t = 0; t < CircuitRoute.size() - 1; t++)
 				cout << CircuitRoute.at(t) << " --> ";
 			cout << CircuitRoute.at (CircuitRoute.size() - 1) << endl;
 			for (int i = 0; i < AssignedSpectralSection.size (); i++) {
@@ -222,10 +228,12 @@ cout << "$2-2-2-2$" << endl;
 			#endif
 
 			CircuitRelease * circuitRelease;
-			circuitRelease = new CircuitRelease (circuitRequest->EventID, CircuitRoute, AssignedSpectralSection, circuitRequest->StartTime + circuitRequest->Duration, core);
+			circuitRelease = new CircuitRelease (circuitRequest->EventID, CircuitRoute, AssignedSpectralSection, circuitRequest->StartTime + circuitRequest->Duration, TempNumofTransponders);
 			eventQueue->queue_insert (circuitRelease);
 
+		#ifdef thisisnotright
 			network->NumofTransponders++;
+		#endif
 			network->NumofAllocatedRequests++;
 		}
 
@@ -245,7 +253,7 @@ cout << "$2-2-2-2$" << endl;
 			}
 		}
 		#endif
-	}
+	// }
 }
 
 
@@ -269,20 +277,20 @@ void ResourceAssignment::handle_releases (CircuitRelease * circuitRelease) {
 
 	for (int i = 1; i < circuitRelease->CircuitRoute.size (); i++) {
 		for (int j = 0; j < circuitRelease->OccupiedSpectralSection.size (); j++) {
-			for (int k = circuitRelease->OccupiedSpectralSection[i][1]; k <= circuitRelease->OccupiedSpectralSection[i][2]; k++) {
+			for (int k = circuitRelease->OccupiedSpectralSection[j][1]; k <= circuitRelease->OccupiedSpectralSection[j][2]; k++) {
 				network->SpectralSlots[circuitRelease->CircuitRoute[i - 1]][circuitRelease->CircuitRoute[i]][circuitRelease->OccupiedSpectralSection[j][0]][k] = false;	
 			}
 		}
 	}
 	
 	network->NumofDoneRequests++;
-	network->NumofTransponders--;
+	network->NumofTransponders = network->NumofTransponders - circuitRelease->TranspondersUsed;
 	
 	#ifdef PRINT_allocation_block_release
 	cout << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
 	cout << "Release Event: " << circuitRelease->EventID << "\tTime: " << circuitRelease->EventTime << endl;
 	for (int i = 0; i < circuitRelease->OccupiedSpectralSection.size (); i++) {
-		cout << "Core: " << circuitRelease->OccupiedSpectralSection[i][0] << "  Spectral Section: " << circuitRelease->OccupiedSpectralSection[i][0] << " to " << circuitRelease->OccupiedSpectralSection[i][1] << endl;
+		cout << "Core: " << circuitRelease->OccupiedSpectralSection[i][0] << "  Spectral Section: " << circuitRelease->OccupiedSpectralSection[i][1] << " to " << circuitRelease->OccupiedSpectralSection[i][2] << endl;
 	}
 	cout << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl << endl;
 	#endif

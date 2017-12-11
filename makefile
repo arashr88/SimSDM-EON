@@ -1,7 +1,7 @@
 CC=g++-7 
 LDFLAGS=-pthread
 CFLAGS=-c -Wall
-EXEC=Simulator
+EXEC=Sim
 
 SRCS=Network.cpp\
 	 ModulationFormats.cpp\

@@ -13,12 +13,12 @@ CircuitRequest::CircuitRequest (unsigned int src, unsigned int dest, double star
 }
 
 
-CircuitRelease::CircuitRelease (long long eventID, vector<int> &circuitRoute, vector< vector<int> > &occupiedSpectralSection, double releaseTime, unsigned int core) {
+CircuitRelease::CircuitRelease (long long eventID, vector<int> &circuitRoute, vector< vector<int> > &occupiedSpectralSection, double releaseTime, unsigned int transpondersUsed) {
 	CircuitRoute = circuitRoute;
 	OccupiedSpectralSection = occupiedSpectralSection;
 	ReleaseTime = releaseTime;
-	Core = core;
 	EventTime = releaseTime;
 	EventType = c_Release;
 	EventID = eventID;
+	TranspondersUsed = transpondersUsed;
 }

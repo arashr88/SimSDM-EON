@@ -38,13 +38,13 @@ class CircuitRequest : public Event {
 
 class CircuitRelease : public Event {
 	public:
-		CircuitRelease (long long eventID, vector<int> & circuitRoute, vector< vector<int> > & occupiedSpectralSection, double releaseTime, unsigned int core);
+		CircuitRelease (long long eventID, vector<int> & circuitRoute, vector< vector<int> > & occupiedSpectralSection, double releaseTime, unsigned int transpondersUsed);
 		~CircuitRelease () {}
 		// unsigned int CircuitID;
 		vector<int> CircuitRoute;
 		vector< vector<int> > OccupiedSpectralSection; // Only stores head slot and tail slot
 		double ReleaseTime;
-		unsigned int Core;
+		unsigned int TranspondersUsed;
 	
 };
 
