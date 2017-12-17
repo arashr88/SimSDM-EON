@@ -1,2 +1,2 @@
 all:
-	g++-7 Plot.cpp -o Plot
+	g++-7 -pthread Plot.cpp -o Plot

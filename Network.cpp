@@ -91,9 +91,9 @@ void Network::simulation () {
 		}
 
 		eventQueue->ev_Queue.pop_front (); //This will destroy the poped Event *.
-		cout << "AAA " << NumofTransponders << ' ' << MaxNumofTransponders << endl;
+		// cout << "AAA " << NumofTransponders << ' ' << MaxNumofTransponders << endl;
 		if (NumofTransponders > MaxNumofTransponders) MaxNumofTransponders = NumofTransponders;
-		cout << "BBB " << NumofTransponders << ' ' << MaxNumofTransponders << endl;
+		// cout << "BBB " << NumofTransponders << ' ' << MaxNumofTransponders << endl;
 
 	#ifdef DEBUG_probe_NumofDoneReqeusts_and_NumofRequests
 		cout << " " << NumofDoneRequests << " and " << NumofRequests << endl;

@@ -12,7 +12,7 @@
 using namespace std;
 mutex mtx;
 
-void thread_function (string cmd, unsigned int cnt) {
+void thread_function (string cmd) {
 	mtx.lock ();
 	system (cmd.c_str ());
 	// cout << cmd << endl;
@@ -24,12 +24,12 @@ int main () {
 	vector<int> Core;
 	double Number;
 	static unsigned int NumofRequests = 100000;
-	static string Exec = "~/Desktop/Simulator/SimSDM-EON/Simulator"; 
+	static string Exec = "~/Desktop/Simulator/SimSDM-EON/Sim"; 
 	static string Topo = "~/Desktop/Simulator/SimSDM-EON/Topology/NSF14.txt";
 	thread ThreadPointer[900];
 	unsigned int cnt = 0;
 
-	fstream plot ("Plot.txt", fstream::out | fstream::app);
+	ofstream plot ("Plot.txt");
 
 	Core.push_back (1);
 	Core.push_back (2);
@@ -45,7 +45,7 @@ int main () {
 			for (unsigned int lambda = 500; lambda < 1401; lambda = lambda + 100) {
 				string Cmd = Exec + ' ' + Topo + ' ' + to_string (NumofRequests) + ' ' + to_string (Core[k]) + ' ' + to_string (lambda * Core[k]) + " 1 " + to_string ((double) rand () / 65535);
 				// cout << Cmd << endl;
-				ThreadPointer[cnt] = thread (thread_function, Cmd, cnt);
+				ThreadPointer[cnt] = thread (thread_function, Cmd);
 				cnt ++;
 				// system (Cmd.c_str ());
 			}
@@ -55,6 +55,8 @@ int main () {
 	for (int i = 0; i < NUMOFTHREADS; i++) {
 		ThreadPointer[i].join ();
 	}
+
+	plot.close ();
 
 	return 1;
 }
