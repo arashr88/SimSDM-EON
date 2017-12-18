@@ -9,8 +9,8 @@
 #include "TrafficGenerator.h"
 #include "Event.h"
 
-#include "ResourceAssignment.h"
-// #include "ResourceAssignment_FullyFlex.h"
+// #include "ResourceAssignment.h"
+#include "ResourceAssignment_FullyFlex.h"
 
 
 

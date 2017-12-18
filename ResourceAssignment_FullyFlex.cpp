@@ -1,12 +1,12 @@
 /**************************************************
  * First-Fit  
  **************************************************/
-#define DEBUG_print_resource_state_on_the_path
-#define DEBUG_print_AvailableSpecSlots
+// #define DEBUG_print_resource_state_on_the_path
+// #define DEBUG_print_AvailableSpecSlots
 // #define DEBUG_collect_eventid_of_blocked_requests //need to collaberate with debug_print_eventid_of_blocked_requests
 
 #define LOCK_use_Modulation_Formats
-#define PRINT_allocation_block_release
+// #define PRINT_allocation_block_release
 
 #ifdef LOCK_use_Modulation_Formats
 #include "ModulationFormats.h"
@@ -23,7 +23,6 @@
 
 
 void ResourceAssignment::check_availability_source (unsigned int predecessor, unsigned int successor, CircuitRequest * circuitRequest) {
-	unsigned int AvailableCounter = 0;
 	vector<int> HAvailableSpecSlots;
 
 	AvailableSpecSlots.clear ();
@@ -43,7 +42,6 @@ void ResourceAssignment::check_availability_source (unsigned int predecessor, un
 void ResourceAssignment::check_availability_link (vector<int> * CircuitRoute) {
 
 	list< vector<int> >::iterator i;
-
 	for (int r = 2; r < CircuitRoute->size (); r++) {
 		for (i = AvailableSpecSlots.begin (); i != AvailableSpecSlots.end (); i++) {
 			if (network->SpectralSlots[CircuitRoute->at (r - 1)][CircuitRoute->at (r)][i->at (0)][i->at (1)] == true) {
@@ -96,11 +94,8 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 
 	// Calculate possible SpectralSlotSections on the link between source and its successor
 	check_availability_source (CircuitRoute[0], CircuitRoute[1], circuitRequest);
+	check_availability_link (&CircuitRoute);
 
-
-	// if (circuitRequest->OccupiedSpectralSlots > AvailableSpecSlots.size ()) AvailableFlag = false;
-	// else {
-		check_availability_link (&CircuitRoute);
 	#ifdef DEBUG_print_AvailableSpecSlots
 	cout << "Start to print AvailableSpecSlots" << endl;
 	list< vector<int> >::iterator i;
@@ -113,17 +108,12 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 	cout << endl;
 	#endif
 		if (circuitRequest->OccupiedSpectralSlots > AvailableSpecSlots.size ()) {
-cout << "$1$" << endl;
 			AvailableFlag = false;
 		}
 		else {
-cout << "$2$" << endl;
 			list< vector<int> >::iterator i;
 			for (i = AvailableSpecSlots.begin (); i != AvailableSpecSlots.end (); i++) {
-cout << "In the loop " << endl;
-cout << "The SS for checking " << i->at (0) << ' ' << i->at(1) << endl;
 				if (AssignedSS.empty ()) {
-cout << "$2-1$" << endl;
 					AssignedSS.push_back (*i);
 					HAssignedSpectralSection.push_back (i->at (0));
 					HAssignedSpectralSection.push_back (i->at (1));
@@ -132,22 +122,16 @@ cout << "$2-1$" << endl;
 					TempNumofTransponders = 1;
 				}
 				else {
-cout << "$2-2$" << endl;
 					vector<int> Temp; 
 					Temp = AssignedSS.back ();
-cout << "Temp "<< Temp[0] << ' ' << Temp[1] + 1 << endl;
-cout << "iterator " << i->at (0) << ' ' << i->at (1) << endl; 
 					if ((i->at (1) == Temp[1] + 1) && (i->at (0) == Temp[0])) {
-cout << "$2-2-1$" << endl;
 						AssignedSS.push_back (*i);
 						HAssignedSpectralSection.at (2) = i->at (1);
 						AssignedSpectralSection.at (AssignedSpectralSection.size () - 1) = HAssignedSpectralSection;
 					}
 					else {
-cout << "$2-2-2$" << endl; 
 						// if ((HAssignedSpectralSection[2] - HAssignedSpectralSection[1] + 1) >= 2) {
 						if ((HAssignedSpectralSection[2] != HAssignedSpectralSection[1])) {
-cout << "$2-2-2-1$" << endl;
 								AssignedSpectralSection.push_back (HAssignedSpectralSection);
 								HAssignedSpectralSection.clear ();
 								TempNumofTransponders++;
@@ -157,7 +141,6 @@ cout << "$2-2-2-1$" << endl;
 								HAssignedSpectralSection.push_back (i->at (1));
 						}
 						else {
-cout << "$2-2-2-2$" << endl;
 							HAssignedSpectralSection.clear ();
 							AssignedSS.erase (AssignedSS.end () - 1);
 							AssignedSS.push_back (*i);
@@ -167,7 +150,6 @@ cout << "$2-2-2-2$" << endl;
 						}
 					}
 				}
-				cout << "PARA " << circuitRequest->OccupiedSpectralSlots << ' ' << AssignedSS.size () << endl;
 				if ((circuitRequest->OccupiedSpectralSlots + TempNumofTransponders) == AssignedSS.size ()) {
 					network->NumofTransponders = network->NumofTransponders + TempNumofTransponders;
 					for (int j = 1; j < CircuitRoute.size (); j++) {
