@@ -24,7 +24,12 @@ int main () {
 	vector<int> Core;
 	double Number;
 	static unsigned int NumofRequests = 100000;
-	static string Exec = "~/Desktop/Simulator/SimSDM-EON/Sim"; 
+
+	/* Choose from differet allocation schemes */ 
+	// static string Exec = "~/Desktop/Simulator/SimSDM-EON/Sim_IsolatedCore"; 
+	static string Exec = "~/Desktop/Simulator/SimSDM-EON/Sim_FullyFlex"; 
+	// static string Exec = "~/Desktop/Simulator/SimSDM-EON/Sim_FixedFlex"; 
+
 	static string Topo = "~/Desktop/Simulator/SimSDM-EON/Topology/NSF14.txt";
 	thread ThreadPointer[900];
 	unsigned int cnt = 0;

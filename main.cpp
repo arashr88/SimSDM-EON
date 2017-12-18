@@ -81,7 +81,7 @@ int main (int argc, char *argv[]) {
 	double BlockingProbability = (double) network->NumofFailedRequests / (double) network->NumofRequests;
 	fstream fp;
 	fp.open ("Plot.txt", fstream::app);
-	string plot = to_string (network->NumofCores) + ' ' + to_string (BlockingProbability) + ' ' + to_string (Erlang) + ' ' + to_string (network->MaxNumofTransponders) + '\n'; 
+	string plot = to_string (network->NumofCores) + ' ' + to_string (Erlang) + ' ' + to_string (BlockingProbability) + ' ' + to_string (network->MaxNumofTransponders) + '\n'; 
 	fp << plot;
 	fp.close ();
 

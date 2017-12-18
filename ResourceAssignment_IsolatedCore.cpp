@@ -17,7 +17,7 @@
 #endif
 
 #include <iostream>
-#include "ResourceAssignment.h"
+#include "ResourceAssignment_IsolatedCore.h"
 #include <string>
  
 
