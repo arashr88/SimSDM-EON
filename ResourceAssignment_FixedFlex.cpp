@@ -1,12 +1,12 @@
 /**************************************************
  * First-Fit  
  **************************************************/
-#define DEBUG_print_resource_state_on_the_path
-#define DEBUG_print_AvailableSpecSlots
+// #define DEBUG_print_resource_state_on_the_path
+// #define DEBUG_print_AvailableSpecSlots
 // #define DEBUG_collect_eventid_of_blocked_requests //need to collaberate with debug_print_eventid_of_blocked_requests
 
 #define LOCK_use_Modulation_Formats
-#define PRINT_allocation_block_release
+// #define PRINT_allocation_block_release
 
 #ifdef LOCK_use_Modulation_Formats
 #include "ModulationFormats.h"
@@ -28,17 +28,17 @@ void ResourceAssignment::check_availability_source (unsigned int predecessor, un
 	vector<int> HAvailableSpecSections;
 	unsigned int NumofGroups;
 
-	
 	AvailableSpecSections.clear ();
 	if (circuitRequest->OccupiedSpectralSlots % network->NumofCores != 0) {
 		NumofGroups = circuitRequest->OccupiedSpectralSlots / network->NumofCores + 1 + 1;
 	}
 	else NumofGroups = circuitRequest->OccupiedSpectralSlots / network->NumofCores + 1;
 
-	for (int i = 0; i < (network->NumofCores - NumofGroups + 1); i++) {
+	for (int i = 0; i < (NumofSpectralSlots - NumofGroups + 1); i++) {
+		AvailableFlag = true;
 		if (network->SpectralSlots[predecessor][successor][0][i] == false) {
 			for (int j = 0; j < NumofGroups; j++) {
-				if (network->SpectralSlots[predecessor][successor][0][i + j] == false) {
+				if (network->SpectralSlots[predecessor][successor][0][i + j] == true) {
 					i = i + j;
 					AvailableFlag = false;
 					break;
@@ -57,10 +57,18 @@ void ResourceAssignment::check_availability_source (unsigned int predecessor, un
 
 
 void ResourceAssignment::check_availability_link (vector<int> * CircuitRoute) {
-	// #ifdef DEBUG_in_check_availability_link
-	// cout << "The checked link is between node " << CircuitRoute[]<< " and " << successor << endl; 
-	// cout << "The checked SpectralSlots are between  " << AvailableSpecSlots[i][0] << " and " << AvailableSpecSlots[i][2] << endl;
-	// #endif
+	#ifdef DEBUG_print_AvailableSpecSlots
+	cout << "Start to print AvailableSpecSlots" << endl;
+	list< vector<int> >::iterator i;
+	cout << AvailableSpecSections.size () << endl;
+	for (i = AvailableSpecSections.begin (); i != AvailableSpecSections.end (); i++) {
+		for (int j = 0; j < i->size (); j++) {
+			cout << i->at (j) << ' ';
+		}
+		cout << "    ";
+	}
+	cout << endl;
+	#endif
 
 	list< vector<int> >::iterator i;
 
@@ -118,6 +126,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 	#ifdef DEBUG_print_AvailableSpecSlots
 	cout << "Start to print AvailableSpecSlots" << endl;
 	list< vector<int> >::iterator i;
+	cout << AvailableSpecSections.size () << endl;
 	for (i = AvailableSpecSections.begin (); i != AvailableSpecSections.end (); i++) {
 		for (int j = 0; j < i->size (); j++) {
 			cout << i->at (j) << ' ';
@@ -127,7 +136,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 	cout << endl;
 	#endif
 
-	if (!AvailableSpecSections.empty ()) AvailableFlag = false;
+	if (AvailableSpecSections.empty ()) AvailableFlag = false;
 	else {
 		list< vector<int> >::iterator begin = AvailableSpecSections.begin ();
 
@@ -232,7 +241,7 @@ void ResourceAssignment::handle_releases (CircuitRelease * circuitRelease) {
 	cout << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
 	cout << "Release Event: " << circuitRelease->EventID << "\tTime: " << circuitRelease->EventTime << endl;
 	for (int i = 0; i < circuitRelease->OccupiedSpectralSection.size (); i++) {
-		cout << "Core: " << circuitRelease->OccupiedSpectralSection[i][0] << "  Spectral Section: " << circuitRelease->OccupiedSpectralSection[i][1] << " to " << circuitRelease->OccupiedSpectralSection[i][2] << endl;
+		cout << "Spectral Section: " << circuitRelease->OccupiedSpectralSection[i][0] << " to " << circuitRelease->OccupiedSpectralSection[i][1] << endl;
 	}
 	cout << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl << endl;
 	#endif

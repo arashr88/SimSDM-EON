@@ -41,11 +41,25 @@ void ResourceAssignment::check_availability_source (unsigned int predecessor, un
 
 void ResourceAssignment::check_availability_link (vector<int> * CircuitRoute) {
 
+	#ifdef DEBUG_print_AvailableSpecSlots
+	cout << "start to print availablespecslots" << endl;
+	list< vector<int> >::iterator i;
+	for (i = AvailableSpecSlots.begin (); i != AvailableSpecSlots.end (); i++) {
+		for (int j = 0; j < i->size (); j++) {
+			cout << i->at (j) << ' ';
+		}
+		cout << "    ";
+	}
+	cout << endl;
+	#endif
+
 	list< vector<int> >::iterator i;
 	for (int r = 2; r < CircuitRoute->size (); r++) {
 		for (i = AvailableSpecSlots.begin (); i != AvailableSpecSlots.end (); i++) {
 			if (network->SpectralSlots[CircuitRoute->at (r - 1)][CircuitRoute->at (r)][i->at (0)][i->at (1)] == true) {
-				AvailableSpecSlots.erase (i);
+				i = AvailableSpecSlots.erase (i);
+				i--;
+				// AvailableSpecSlots.erase (i); // This line will only work on Mac, will cause Seg Fault (dump core) on ubuntu.
 			}
 		}
 	}
@@ -96,10 +110,10 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 	check_availability_source (CircuitRoute[0], CircuitRoute[1], circuitRequest);
 	check_availability_link (&CircuitRoute);
 
-	#ifdef DEBUG_print_AvailableSpecSlots
-	cout << "Start to print AvailableSpecSlots" << endl;
+	#ifdef debug_print_availablespecslots
+	cout << "start to print availablespecslots" << endl;
 	list< vector<int> >::iterator i;
-	for (i = AvailableSpecSlots.begin (); i != AvailableSpecSlots.end (); i++) {
+	for (i = availablespecslots.begin (); i != availablespecslots.end (); i++) {
 		for (int j = 0; j < i->size (); j++) {
 			cout << i->at (j) << ' ';
 		}
@@ -107,48 +121,49 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 	}
 	cout << endl;
 	#endif
-		if (circuitRequest->OccupiedSpectralSlots > AvailableSpecSlots.size ()) {
-			AvailableFlag = false;
-		}
-		else {
-			list< vector<int> >::iterator i;
-			for (i = AvailableSpecSlots.begin (); i != AvailableSpecSlots.end (); i++) {
-				if (AssignedSS.empty ()) {
+
+	if (circuitRequest->OccupiedSpectralSlots > AvailableSpecSlots.size ()) {
+		AvailableFlag = false;
+	}
+	else {
+		list< vector<int> >::iterator i;
+		for (i = AvailableSpecSlots.begin (); i != AvailableSpecSlots.end (); i++) {
+			if (AssignedSS.empty ()) {
+				AssignedSS.push_back (*i);
+				HAssignedSpectralSection.push_back (i->at (0));
+				HAssignedSpectralSection.push_back (i->at (1));
+				HAssignedSpectralSection.push_back (i->at (1));
+				AssignedSpectralSection.push_back (HAssignedSpectralSection);
+				TempNumofTransponders = 1;
+			}
+			else {
+				vector<int> Temp; 
+				Temp = AssignedSS.back ();
+				if ((i->at (1) == Temp[1] + 1) && (i->at (0) == Temp[0])) {
 					AssignedSS.push_back (*i);
-					HAssignedSpectralSection.push_back (i->at (0));
-					HAssignedSpectralSection.push_back (i->at (1));
-					HAssignedSpectralSection.push_back (i->at (1));
-					AssignedSpectralSection.push_back (HAssignedSpectralSection);
-					TempNumofTransponders = 1;
+					HAssignedSpectralSection.at (2) = i->at (1);
+					AssignedSpectralSection.at (AssignedSpectralSection.size () - 1) = HAssignedSpectralSection;
 				}
 				else {
-					vector<int> Temp; 
-					Temp = AssignedSS.back ();
-					if ((i->at (1) == Temp[1] + 1) && (i->at (0) == Temp[0])) {
+					// if ((HAssignedSpectralSection[2] - HAssignedSpectralSection[1] + 1) >= 2) {
+					if ((HAssignedSpectralSection[2] != HAssignedSpectralSection[1])) {
+						AssignedSpectralSection.push_back (HAssignedSpectralSection);
+						HAssignedSpectralSection.clear ();
+						TempNumofTransponders++;
 						AssignedSS.push_back (*i);
-						HAssignedSpectralSection.at (2) = i->at (1);
-						AssignedSpectralSection.at (AssignedSpectralSection.size () - 1) = HAssignedSpectralSection;
+						HAssignedSpectralSection.push_back (i->at (0));
+						HAssignedSpectralSection.push_back (i->at (1));
+						HAssignedSpectralSection.push_back (i->at (1));
 					}
 					else {
-						// if ((HAssignedSpectralSection[2] - HAssignedSpectralSection[1] + 1) >= 2) {
-						if ((HAssignedSpectralSection[2] != HAssignedSpectralSection[1])) {
-								AssignedSpectralSection.push_back (HAssignedSpectralSection);
-								HAssignedSpectralSection.clear ();
-								TempNumofTransponders++;
-								AssignedSS.push_back (*i);
-								HAssignedSpectralSection.push_back (i->at (0));
-								HAssignedSpectralSection.push_back (i->at (1));
-								HAssignedSpectralSection.push_back (i->at (1));
-						}
-						else {
-							HAssignedSpectralSection.clear ();
-							AssignedSS.erase (AssignedSS.end () - 1);
-							AssignedSS.push_back (*i);
-							HAssignedSpectralSection.push_back (i->at (0));
-							HAssignedSpectralSection.push_back (i->at (1));
-							HAssignedSpectralSection.push_back (i->at (1));
-						}
+						HAssignedSpectralSection.clear ();
+						AssignedSS.erase (AssignedSS.end () - 1);
+						AssignedSS.push_back (*i);
+						HAssignedSpectralSection.push_back (i->at (0));
+						HAssignedSpectralSection.push_back (i->at (1));
+						HAssignedSpectralSection.push_back (i->at (1));
 					}
+				}
 				}
 				if ((circuitRequest->OccupiedSpectralSlots + TempNumofTransponders) == AssignedSS.size ()) {
 					network->NumofTransponders = network->NumofTransponders + TempNumofTransponders;
@@ -216,7 +231,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 			}
 		}
 		#endif
-	// }
+		// }
 }
 
 
@@ -245,10 +260,10 @@ void ResourceAssignment::handle_releases (CircuitRelease * circuitRelease) {
 			}
 		}
 	}
-	
+
 	network->NumofDoneRequests++;
 	network->NumofTransponders = network->NumofTransponders - circuitRelease->TranspondersUsed;
-	
+
 	#ifdef PRINT_allocation_block_release
 	cout << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
 	cout << "Release Event: " << circuitRelease->EventID << "\tTime: " << circuitRelease->EventTime << endl;

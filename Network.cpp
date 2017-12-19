@@ -9,8 +9,9 @@
 #include "TrafficGenerator.h"
 #include "Event.h"
 
-#include "ResourceAssignment_IsolatedCore.h"
+// #include "ResourceAssignment_IsolatedCore.h"
 // #include "ResourceAssignment_FullyFlex.h"
+#include "ResourceAssignment_FixedFlex.h"
 
 
 
@@ -110,6 +111,7 @@ void Network::simulation () {
 	cout << endl;
 	#endif
 	cout << "Max # of Transponders used: " << MaxNumofTransponders << endl;
+	cout << "# of blocked requests is " << NumofFailedRequests << endl;
 	cout << "Network Load: " << Lambda / Mu << " Erlang" << endl; 
 	cout << "Blocking Probability: " << (double) NumofFailedRequests / (double) NumofRequests << endl;
 }
