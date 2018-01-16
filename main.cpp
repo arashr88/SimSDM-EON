@@ -79,9 +79,14 @@ int main (int argc, char *argv[]) {
 	network->simulation ();
 	double Erlang = network->Lambda / network->Mu;
 	double BlockingProbability = (double) network->NumofFailedRequests / (double) network->NumofRequests;
+	network->AvgCoresUsed = (double) network->TotalCoresUsed / network->NumofAllocatedRequests;
+	network->AvgHoldingTime = network->TotalHoldingTime / network->NumofAllocatedRequests;
+	cout << network->TotalTranspondersUsed << ' ' << network->NumofAllocatedRequests << endl;
+	network->AvgTranspondersUsed = (double) network->TotalTranspondersUsed / network->NumofAllocatedRequests;
+	network->AvgGBUsed = network->AvgTranspondersUsed;
 	fstream fp;
 	fp.open ("Plot.txt", fstream::app);
-	string plot = to_string (network->NumofCores) + ' ' + to_string (Erlang) + ' ' + to_string (BlockingProbability) + ' ' + to_string (network->MaxNumofTransponders) + '\n'; 
+	string plot = to_string (network->NumofCores) + ' ' + to_string (Erlang) + ' ' + to_string (BlockingProbability) + ' ' + to_string (network->MaxNumofTransponders) + ' ' + to_string (network->AvgCoresUsed) + ' ' + to_string (network->AvgHoldingTime) + ' ' + to_string (network->AvgTranspondersUsed)+ ' ' + to_string (network->AvgGBUsed) + '\n'; 
 	fp << plot;
 	fp.close ();
 

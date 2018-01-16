@@ -191,6 +191,8 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 			cout << CircuitRoute.at(t) << " --> ";
 		cout << CircuitRoute.at (CircuitRoute.size() - 1) << endl;
 		cout << "Core: " << AssignedSpectralSection[0][0] << "  Spectral Section: " << AssignedSpectralSection[0][1] << " to " << AssignedSpectralSection[0][2] << endl; 
+		cout << "# of Cores Used: " << '1' << endl;
+		cout << "# of Transponders Used: " << '1' << endl;
 		cout << "------------------------------------------------------------" << endl << endl;
 		#endif
 
@@ -200,6 +202,12 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 
 		network->NumofTransponders++;
 		network->NumofAllocatedRequests++;
+		network->TotalTranspondersUsed++;
+		network->TotalHoldingTime += circuitRequest->Duration;
+		network->TotalCoresUsed++;
+		network->TotalGBUsed++;
+		network->TotalDataSize += circuitRequest->DataSize;
+		network->TotalSSUsed += circuitRequest->OccupiedSpectralSlots + 1;
 	}
 
 	#ifdef DEBUG_print_resource_state_on_the_path

@@ -1,7 +1,7 @@
 #include "Event.h"
 
 
-CircuitRequest::CircuitRequest (unsigned int src, unsigned int dest, double startTime, double duration, unsigned int occupiedSpectralSlots, long long eventID) {
+CircuitRequest::CircuitRequest (unsigned int src, unsigned int dest, double startTime, double duration, unsigned int dataSize, unsigned int occupiedSpectralSlots, long long eventID) {
 	Src = src;
 	Dest = dest;
 	StartTime = startTime;
@@ -10,6 +10,7 @@ CircuitRequest::CircuitRequest (unsigned int src, unsigned int dest, double star
 	EventID = eventID;
 	EventType = c_Request;	
 	OccupiedSpectralSlots = occupiedSpectralSlots;
+	DataSize = dataSize;
 }
 
 

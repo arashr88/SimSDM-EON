@@ -26,12 +26,13 @@ class Event {
 
 class CircuitRequest : public Event {
 	public:
-		CircuitRequest (unsigned int src, unsigned int dest, double startTime, double duration, unsigned int OccupiedSpectralSlots, long long eventID); 
+		CircuitRequest (unsigned int src, unsigned int dest, double startTime, double duration, unsigned int dataSize, unsigned int occupiedSpectralSlots, long long eventID); 
 		~CircuitRequest () {}
 		unsigned int Src;
 		unsigned int Dest;
 		double StartTime;
 		double Duration;
+		unsigned int DataSize;
 		unsigned int OccupiedSpectralSlots; // Only stores head slot and tail slot
 };
 
