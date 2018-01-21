@@ -11,11 +11,12 @@ class ModulationFormats {
 		ModulationFormats (CircuitRequest * cr, Network * net) {request = cr; network = net;}
 		~ModulationFormats () {}
 
-		string mf_chosen (vector<int> & shortestPath, unsigned int * occupiedSpectralSlots);
+		string mf_chosen (vector<int> & shortestPath, unsigned int * occupiedSpectralSlots, unsigned int * dataSize);
 
 		MF_t m_Format;
 	private:
 		unsigned int spectralslots_computation (unsigned int BitsPerSymbol, unsigned int bm_SpectralSlots);
+		unsigned int datasize_computation (unsigned int BitsPerSymbol, unsigned int bm_DataSize);
 		double search_link_weight (unsigned int predecessor, unsigned int successor);
 		CircuitRequest * request; 
 		Network * network;

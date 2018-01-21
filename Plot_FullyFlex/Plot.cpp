@@ -7,7 +7,8 @@
 #include <mutex>
 
 #define NUMOFSEEDS 30
-#define NUMOFTHREADS 900 
+#define NUMOFTHREADS 3600 
+#define NUMOFREQUESTS 50
 
 using namespace std;
 mutex mtx;
@@ -22,10 +23,11 @@ void thread_function (string cmd) {
 int main () {
 	vector<int> Core;
 	double Number;
-	static unsigned int NumofRequests = 100000;
+	int Seed[NUMOFSEEDS];
+	static unsigned int NumofRequests = NUMOFREQUESTS;
 	static string Exec = "~/Desktop/Simulator/SimSDM-EON/Sim_FullyFlex"; 
 	static string Topo = "~/Desktop/Simulator/SimSDM-EON/Topology/NSF14.txt";
-	thread ThreadPointer[900];
+	thread ThreadPointer[NUMOFTHREADS];
 	unsigned int cnt = 0;
 
 	ofstream plot ("Plot.txt");
@@ -33,16 +35,19 @@ int main () {
 	Core.push_back (1);
 	Core.push_back (2);
 	Core.push_back (4);
+	Core.push_back (7);
 
 	cout << "Input a number for seed and press enter: " << endl;
 	cin >> Number; 
 	srand (Number);
-
+	for (int i = 0; i < NUMOFSEEDS; i++) {
+		Seed[i] = (double) rand () / 65535;
+	}
 
 	for (unsigned int k = 0; k < Core.size (); k++) {
-		for (unsigned int seed = 0; seed < NUMOFSEEDS; seed++) {
-			for (unsigned int lambda = 500; lambda < 1401; lambda = lambda + 100) {
-				string Cmd = Exec + ' ' + Topo + ' ' + to_string (NumofRequests) + ' ' + to_string (Core[k]) + ' ' + to_string (lambda * Core[k]) + " 1 " + to_string ((double) rand () / 65535);
+		for (unsigned int lambda = 100; lambda < 491; lambda = lambda + 10) {
+			for (unsigned int seed = 0; seed < NUMOFSEEDS; seed++) {
+				string Cmd = Exec + ' ' + Topo + ' ' + to_string (NumofRequests) + ' ' + to_string (Core[k]) + ' ' + to_string (lambda * Core[k]) + " 1 " + to_string (Seed[seed]);
 				ThreadPointer[cnt] = thread (thread_function, Cmd);
 				cnt ++;
 			}

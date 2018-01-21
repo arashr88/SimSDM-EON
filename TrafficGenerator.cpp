@@ -42,8 +42,8 @@ void TrafficGenerator::gen_first_request () {
 	
 	network->RequestCounter++;
 	#ifdef DEBUG_print_new_built_Event
-	cout << "New Built event:" << endl;
-	cout << request->Src << ' ' << request->Dest << ' ' << request->StartTime << ' ' << request->Duration << ' ' << request->DataSize << ' ' << request->OccupiedSpectralSlots << endl;
+	cout << "\tNew Built event:" << endl;
+	cout << '\t' << request->Src << ' ' << request->Dest << ' ' << request->StartTime << ' ' << request->Duration << ' ' << request->DataSize << ' ' << request->OccupiedSpectralSlots << endl;
 	#endif
 
 	eventQUeue->ev_Queue.push_back (request);

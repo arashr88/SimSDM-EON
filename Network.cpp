@@ -12,7 +12,8 @@
 // #include "ResourceAssignment_IsolatedCore.h"
 // #include "ResourceAssignment_FullyFlex.h"
 // #include "ResourceAssignment_FixedFlex.h"
-#include "ResourceAssignment_FiFM.h"
+// #include "ResourceAssignment_FiFM.h"
+#include "ResourceAssignment_ICM.h"
 
 
 
@@ -55,7 +56,7 @@ void Network::init () {
 	TotalCoresUsed = 0;
 	TotalGBUsed = 0;
 	TotalSSUsed = 0;
-	TotalSGsOccupied = 0;
+	TotalSSOccupied = 0;
 	TotalDataSize = 0;
 	AvgExtFrag = 0;
 	AvgIntFrag = 0;
@@ -121,13 +122,26 @@ void Network::simulation () {
 	}
 	cout << endl;
 	#endif
+	
+	AvgHoldingTime = TotalHoldingTime / NumofAllocatedRequests;
+	AvgTranspondersUsed = (double) TotalTranspondersUsed / NumofAllocatedRequests;
+	AvgCoresUsed = (double) TotalCoresUsed / NumofAllocatedRequests;
+	AvgGBUsed = (double) TotalGBUsed / NumofAllocatedRequests;
+	AvgIntFrag = (1 - ((double) TotalDataSize / (TotalSSUsed * BW_SPECSLOT)));
+	AvgExtFrag = (1 - (double) TotalSSUsed / TotalSSOccupied);
+	AvgHybridFrag = (1 - (double) TotalDataSize / (TotalSSOccupied * BW_SPECSLOT));
+
+
 	cout << "Max # of Transponders used: " << MaxNumofTransponders << endl;
 	cout << "# of blocked requests is " << NumofFailedRequests << endl;
 	cout << "Network Load: " << Lambda / Mu << " Erlang" << endl; 
 	cout << "Blocking Probability: " << (double) NumofFailedRequests / (double) NumofRequests << endl;
-	cout << "Average Cores Used per Request: " << ((double) TotalCoresUsed / NumofAllocatedRequests) << endl;
-	cout << "Average Transponders Used per Request: " << ((double ) TotalTranspondersUsed / NumofAllocatedRequests) << endl;
-	cout << "Average Holding Time per Request: " << TotalHoldingTime / NumofAllocatedRequests << endl;
-	cout << "Average GuardBand per Request: " << (double) TotalGBUsed / NumofAllocatedRequests << endl;
+	cout << "Average Cores Used Used per Request: " << AvgCoresUsed << endl;
+	cout << "Average Transponders Used per Request: " << AvgCoresUsed << endl;
+	cout << "Average Holding Time per Request: " << AvgHoldingTime << endl;
+	cout << "Average GuardBand per Request: " << AvgGBUsed << endl;
+	cout << "Average Internal Fragmentation: " << AvgIntFrag << endl;
+	cout << "Average External Fragmentation: " << AvgExtFrag << endl;
+	cout << "Average Hybrid Fragmentation: " << AvgHybridFrag << endl; 
 }
 

@@ -1,7 +1,7 @@
 CC=g++-7 
 LDFLAGS=-pthread
-CFLAGS=-c -Wall
-EXEC=Sim_IsolatedCore
+CFLAGS=-c 
+EXEC=Sim_ICM
 
 SRCS=Network.cpp\
 	 ModulationFormats.cpp\
@@ -10,7 +10,7 @@ SRCS=Network.cpp\
 	 TrafficGenerator.cpp\
 	 Event.cpp\
 	 EventQueue.cpp\
-	 ResourceAssignment_IsolatedCore.cpp\
+	 ResourceAssignment_ICM.cpp\
 	 RandomVariable.cpp\
 	 Topology.cpp\
 	 main.cpp
@@ -23,7 +23,7 @@ all: $(OBJS) $(EXEC)
 $(EXEC): $(OBJS)
 	$(CC) $(LDFLAGS) $(OBJS) -o $@
 
-Network.o: Network.cpp Network.h EventQueue.h RoutingTable.h TrafficGenerator.h Event.h ResourceAssignment_IsolatedCore.h
+Network.o: Network.cpp Network.h EventQueue.h RoutingTable.h TrafficGenerator.h Event.h ResourceAssignment_ICM.h
 	$(CC) $(CFLAGS) Network.cpp
 
 Dijkstra.o: Dijkstra.cpp Dijkstra.h Network.h Topology.h
@@ -41,8 +41,8 @@ Event.o: Event.cpp Event.h
 EventQueue.o: EventQueue.cpp EventQueue.h Event.h
 	$(CC) $(CFLAGS) EventQueue.cpp
 
-ResourceAssignment_IsolatedCore.o: ResourceAssignment_IsolatedCore.cpp ResourceAssignment_IsolatedCore.h Event.h EventQueue.h RoutingTable.h ModulationFormats.h
-	$(CC) $(CFLAGS) ResourceAssignment_IsolatedCore.cpp
+ResourceAssignment_ICM.o: ResourceAssignment_ICM.cpp ResourceAssignment_ICM.h Event.h EventQueue.h RoutingTable.h ModulationFormats.h
+	$(CC) $(CFLAGS) ResourceAssignment_ICM.cpp
 
 RandomVariable.o: RandomVariable.cpp RandomVariable.h 
 	$(CC) $(CFLAGS) RandomVariable.cpp
@@ -59,13 +59,5 @@ main.o: main.cpp
 .PHONY: clean
 clean:
 	rm $(CLEANFILES)
-
-
-
-# INCLUDES=-I.
-
-# .cpp.o: 
-# 	$(CC) $(INCLUDES) $(CFLAGS) $< -o $@
-
 
 

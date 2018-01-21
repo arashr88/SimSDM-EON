@@ -8,8 +8,10 @@
 
 
 #define GB 1 // Guardband
-#define NumofSpectralSlots 128
-#define MAX_DATASIZE_REQUEST 200 
+// #define NumofSpectralSlots 128
+#define NumofSpectralSlots 16
+// #define MAX_DATASIZE_REQUEST 200 
+#define MAX_DATASIZE_REQUEST 50 
 #define BW_SPECSLOT 12.5
 
 using namespace std;
@@ -49,7 +51,7 @@ class Network {
 		// Metrics to Measure Fregmentation 
 		long long TotalDataSize;
 		long long TotalSSUsed;
-		long long TotalSGsOccupied;
+		long long TotalSSOccupied;
 
 		double AvgIntFrag;
 		double AvgExtFrag;
