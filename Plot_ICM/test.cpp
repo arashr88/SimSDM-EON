@@ -2,75 +2,118 @@
 #include <vector>
 #include <fstream>
 #include <string>
+#include <cmath>
+#include "txtParse.h"
+
+#define NUMOFSEEDS 30
+#define EPSILON 0.000001
 
 using namespace std;
 
 int main () {
 	string IFileName, IFile, OFileName1, OFileName2, OFileName3, OFileName4, OFileName5, OFileName6, OFileName7, OFileName8, OFileName9;
-	cin >> IFile;
+	IFile = "Plot";
 	IFileName = IFile + ".txt";
 	ifstream Fin (IFileName); 
+	vector<int> PotentialCore, PotentialLambda;
+	vector<int> PotentialSeed;
+	double Number;
 
-	string Core, Lambda, BP, NoT, CpR, HTpR, TpR, GBpR, AvgIFpR, AvgEFpR, AvgHFpR;
-	double NCore, NLambda, NBP, NNoT, NCpR, NHTpR, NTpR, NGBpR, NAvgIFpR, NAvgEFpR, NAvgHFpR;
+	PotentialCore.push_back (1);
+	PotentialCore.push_back (2);
+	PotentialCore.push_back (4);
+	// PotentialCore.push_back (7);
+
+	for (int i = 100; i < 491; i += 10) {
+		PotentialLambda.push_back (i);
+	}
+
+	cout << "Input a number for seed and press enter: " << endl;
+	cin >> Number; 
+	srand (Number);
+	for (int i = 0; i < NUMOFSEEDS; i++) {
+		PotentialSeed.push_back (rand () / 65535);
+	}
+	
+
+	string Core, Lambda, Seed, BP, NoT, CpR, HTpR, TpR, GBpR, AvgIFpR, AvgEFpR, AvgHFpR;
+	double NCore, NLambda, NSeed, NBP, NNoT, NCpR, NHTpR, NTpR, NGBpR, NAvgIFpR, NAvgEFpR, NAvgHFpR;
 	vector< vector< vector<double> > > BParray, NoTarray, CpRarray, HTpRarray, TpRarray, GBpRarray, AvgIFpRarray, AvgEFpRarray, AvgHFpRarray;
 	vector < vector<double> > XBParray, XNoTarray, XCpRarray, XHTpRarray, XTpRarray, XGBpRarray, XAvgIFpRarray, XAvgEFpRarray, XAvgHFpRarray;
 	vector<double> YBParray, YNoTarray, YCpRarray, YHTpRarray, YTpRarray, YGBpRarray, YAvgIFpRarray, YAvgEFpRarray, YAvgHFpRarray;
 
 
-	int Val[] = {1, 4, 7};
-
-	vector<int> PotentialCore (Val, Val + sizeof(Val) / sizeof (int));
-	vector<int> PotentialLambda;
-
-	for (int i = 100; i < 491; i = i + 10) {
-		PotentialLambda.push_back (i);
-	}
-
 	for (int i = 0; i < PotentialCore.size (); i++) {
 		for (int k = 0; k < PotentialLambda.size (); k++) {
 			YBParray.push_back (PotentialCore[i]);
 			YBParray.push_back (PotentialLambda[k]);
+			for (int i = 0; i < PotentialSeed.size (); i++) {
+				YBParray.push_back (-1);
+			}
 			XBParray.push_back (YBParray);
 			YBParray.clear ();
 
 			YNoTarray.push_back (PotentialCore[i]);
 			YNoTarray.push_back (PotentialLambda[k]);
+			for (int i = 0; i < PotentialSeed.size (); i++) {
+				YNoTarray.push_back (-1);
+			}
 			XNoTarray.push_back (YNoTarray);
 			YNoTarray.clear ();
 
 			YCpRarray.push_back (PotentialCore[i]);
 			YCpRarray.push_back (PotentialLambda[k]);
+			for (int i = 0; i < PotentialSeed.size (); i++) {
+				YCpRarray.push_back (-1);
+			}
 			XCpRarray.push_back (YCpRarray);
 			YCpRarray.clear ();
 
 			YHTpRarray.push_back (PotentialCore[i]);
 			YHTpRarray.push_back (PotentialLambda[k]);
+			for (int i = 0; i < PotentialSeed.size (); i++) {
+				YHTpRarray.push_back (-1);
+			}
 			XHTpRarray.push_back (YHTpRarray);
 			YHTpRarray.clear ();
 
 			YTpRarray.push_back (PotentialCore[i]);
 			YTpRarray.push_back (PotentialLambda[k]);
+			for (int i = 0; i < PotentialSeed.size (); i++) {
+				YTpRarray.push_back (-1);
+			}
 			XTpRarray.push_back (YTpRarray);
 			YTpRarray.clear ();
 
 			YGBpRarray.push_back (PotentialCore[i]);
 			YGBpRarray.push_back (PotentialLambda[k]);
+			for (int i = 0; i < PotentialSeed.size (); i++) {
+				YGBpRarray.push_back (-1);
+			}
 			XGBpRarray.push_back (YGBpRarray);
 			YGBpRarray.clear ();
 
 			YAvgIFpRarray.push_back (PotentialCore[i]);
 			YAvgIFpRarray.push_back (PotentialLambda[k]);
+			for (int i = 0; i < PotentialSeed.size (); i++) {
+				YAvgIFpRarray.push_back (-1);
+			}
 			XAvgIFpRarray.push_back (YAvgIFpRarray);
 			YAvgIFpRarray.clear ();
 
 			YAvgEFpRarray.push_back (PotentialCore[i]);
 			YAvgEFpRarray.push_back (PotentialLambda[k]);
+			for (int i = 0; i < PotentialSeed.size (); i++) {
+				YAvgEFpRarray.push_back (-1);
+			}
 			XAvgEFpRarray.push_back (YAvgEFpRarray);
 			YAvgEFpRarray.clear ();
 
 			YAvgHFpRarray.push_back (PotentialCore[i]);
 			YAvgHFpRarray.push_back (PotentialLambda[k]);
+			for (int i = 0; i < PotentialSeed.size (); i++) {
+				YAvgHFpRarray.push_back (-1);
+			}
 			XAvgHFpRarray.push_back (YAvgHFpRarray);
 			YAvgHFpRarray.clear ();
 		}
@@ -102,13 +145,14 @@ int main () {
 		XAvgHFpRarray.clear ();
 	}
 
-
 	while (!Fin.eof ()) {
 		int CoreCnt = 0;
 		int LambdaCnt = 0;
+		int SeedCnt = 0;
 
 		Fin >> Core;
 		Fin >> Lambda;
+		Fin >> Seed;
 		Fin >> BP; 
 		Fin >> NoT;
 		Fin >> CpR;
@@ -121,6 +165,7 @@ int main () {
 
 		NCore = stof (Core);
 		NLambda = stof (Lambda);
+		NSeed = stof (Seed);
 		NBP = stof (BP);
 		NNoT = stof (NoT);
 		NCpR = stof (CpR);
@@ -139,15 +184,28 @@ int main () {
 			if (((int) NLambda / (int) NCore) == PotentialLambda[LambdaCnt]) break;
 		}
 
-		BParray[CoreCnt][LambdaCnt].push_back (NBP);
-		NoTarray[CoreCnt][LambdaCnt].push_back (NNoT);
-		CpRarray[CoreCnt][LambdaCnt].push_back (NCpR);
-		HTpRarray[CoreCnt][LambdaCnt].push_back (NHTpR);
-		TpRarray[CoreCnt][LambdaCnt].push_back (NTpR);
-		GBpRarray[CoreCnt][LambdaCnt].push_back (NGBpR);
-		AvgIFpRarray[CoreCnt][LambdaCnt].push_back (NAvgIFpR);
-		AvgEFpRarray[CoreCnt][LambdaCnt].push_back (NAvgEFpR);
-		AvgHFpRarray[CoreCnt][LambdaCnt].push_back (NAvgHFpR);
+		for (SeedCnt = 0; SeedCnt < PotentialSeed.size (); SeedCnt++) {
+			if (abs(NSeed - PotentialSeed[SeedCnt]) < EPSILON) break;
+		}
+
+		for (int i = 0; i < PotentialSeed.size (); i++) {
+			cout << PotentialSeed[i] << ' ';
+		}
+		cout << endl;
+		cout << SeedCnt << endl;
+		cout << (NSeed - PotentialSeed[3])<< endl;
+		cout << NSeed << ' ' << PotentialSeed[SeedCnt] << endl;
+
+		
+		BParray[CoreCnt][LambdaCnt].at (SeedCnt + 2) = NBP;
+		NoTarray[CoreCnt][LambdaCnt].at (SeedCnt + 2) = NNoT;
+		CpRarray[CoreCnt][LambdaCnt].at (SeedCnt + 2) = NCpR;
+		HTpRarray[CoreCnt][LambdaCnt].at (SeedCnt + 2) = NHTpR;
+		TpRarray[CoreCnt][LambdaCnt].at (SeedCnt + 2) = NTpR;
+		GBpRarray[CoreCnt][LambdaCnt].at (SeedCnt + 2) = NGBpR;
+		AvgIFpRarray[CoreCnt][LambdaCnt].at (SeedCnt + 2) = NAvgIFpR;
+		AvgEFpRarray[CoreCnt][LambdaCnt].at (SeedCnt + 2) = NAvgEFpR;
+		AvgHFpRarray[CoreCnt][LambdaCnt].at (SeedCnt + 2) = NAvgHFpR;
 	}
 
 
@@ -199,15 +257,15 @@ int main () {
 	}
 
 
-	OFileName1 = IFile + "_BP.txt";
-	OFileName2 = IFile + "_NoT.txt";
-	OFileName3 = IFile + "_CpR.txt";
-	OFileName4 = IFile + "_HTpR.txt";
-	OFileName5 = IFile + "_TpR.txt";
-	OFileName6 = IFile + "_GBpR.txt";
-	OFileName7 = IFile + "_AvgIFpR.txt";
-	OFileName8 = IFile + "_AvgEFpR.txt";
-	OFileName9 = IFile + "_AvgHFpR.txt";
+	OFileName1 = IFile + "_BP.csv";
+	OFileName2 = IFile + "_NoT.csv";
+	OFileName3 = IFile + "_CpR.csv";
+	OFileName4 = IFile + "_HTpR.csv";
+	OFileName5 = IFile + "_TpR.csv";
+	OFileName6 = IFile + "_GBpR.csv";
+	OFileName7 = IFile + "_AvgIFpR.csv";
+	OFileName8 = IFile + "_AvgEFpR.csv";
+	OFileName9 = IFile + "_AvgHFpR.csv";
 	
 	ofstream Fbp (OFileName1);
 	ofstream Fnot (OFileName2);
@@ -219,6 +277,20 @@ int main () {
 	ofstream Favgefpr (OFileName8);
 	ofstream Favghfpr (OFileName9);
 
+	string Sseed;
+	for (int i = 0; i < PotentialSeed.size (); i++) {
+		Sseed = Sseed + to_string (PotentialSeed[i]) + ',';
+
+		Fbp << Sseed;
+		Fnot << Sseed;
+		Fcpr << Sseed;
+		Fhtpr << Sseed;
+		Ftpr << Sseed;
+		Fgbpr << Sseed;
+		Favgifpr << Sseed;
+		Favgefpr << Sseed;
+		Favghfpr << Sseed;
+	}
 
 	for (int i = 0; i < BParray.size (); i++) {
 		for (int j = 0; j < BParray[i].size (); j++) {
@@ -233,15 +305,15 @@ int main () {
 			string Savghfpr;
 
 			for (int k = 0; k < BParray[i][j].size (); k++) {
-				Sbp = Sbp + to_string (BParray[i][j][k]) + ' '; 
-				Snot = Snot + to_string (NoTarray[i][j][k]) + ' ';
-				Scpr = Scpr + to_string (CpRarray[i][j][k]) + ' '; 
-				Shtpr = Shtpr + to_string (HTpRarray[i][j][k]) + ' '; 
-				Stpr = Stpr + to_string (TpRarray[i][j][k]) + ' '; 
-				Sgbpr = Sgbpr + to_string (GBpRarray[i][j][k]) + ' ';
-				Savgifpr = Savgifpr + to_string (AvgIFpRarray[i][j][k]) + ' '; 
-				Savgefpr = Savgefpr + to_string (AvgEFpRarray[i][j][k]) + ' '; 
-				Savghfpr = Savghfpr + to_string (AvgHFpRarray[i][j][k]) + ' '; 
+				Sbp = Sbp + to_string (BParray[i][j][k]) + ','; 
+				Snot = Snot + to_string (NoTarray[i][j][k]) + ',';
+				Scpr = Scpr + to_string (CpRarray[i][j][k]) + ','; 
+				Shtpr = Shtpr + to_string (HTpRarray[i][j][k]) + ','; 
+				Stpr = Stpr + to_string (TpRarray[i][j][k]) + ','; 
+				Sgbpr = Sgbpr + to_string (GBpRarray[i][j][k]) + ',';
+				Savgifpr = Savgifpr + to_string (AvgIFpRarray[i][j][k]) + ','; 
+				Savgefpr = Savgefpr + to_string (AvgEFpRarray[i][j][k]) + ','; 
+				Savghfpr = Savghfpr + to_string (AvgHFpRarray[i][j][k]) + ','; 
 			}
 
 			Sbp = Sbp + '\n';
@@ -279,3 +351,4 @@ int main () {
 
 	return 1;
 }
+

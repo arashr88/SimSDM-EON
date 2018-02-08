@@ -1,12 +1,12 @@
 /**************************************************
  * First-Fit  
  **************************************************/
-#define DEBUG_print_SrcAvailableSpecSlots
-#define DEBUG_print_resource_state_on_the_path
-#define DEBUG_print_AvailableSpecSlots
-#define DEBUG_collect_EventID_of_blocked_requests //need to collaberate with debug_print_eventid_of_blocked_requests
-
-#define PRINT_allocation_block_release
+// #define DEBUG_print_SrcAvailableSpecSlots
+// #define DEBUG_print_resource_state_on_the_path
+// #define DEBUG_print_AvailableSpecSlots
+// #define DEBUG_collect_EventID_of_blocked_requests //need to collaberate with debug_print_eventid_of_blocked_requests
+//
+// #define PRINT_allocation_block_release
 #define LOCK_use_Modulation_Formats
 
 #ifdef LOCK_use_Modulation_Formats
@@ -70,7 +70,7 @@ void ResourceAssignment::check_availability_link (vector<int> * CircuitRoute) {
 
 
 void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
-	RoutingTable routingTable (network);	
+	RoutingTable routingTable (network);
 
 	vector<int> CircuitRoute;
 	bool AvailableFlag = true;

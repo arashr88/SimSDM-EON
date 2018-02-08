@@ -9,11 +9,11 @@
 #include "TrafficGenerator.h"
 #include "Event.h"
 
-// #include "ResourceAssignment_IsolatedCore.h"
+#include "ResourceAssignment_IsolatedCore.h"
+// #include "ResourceAssignment_ICM.h"
 // #include "ResourceAssignment_FullyFlex.h"
 // #include "ResourceAssignment_FixedFlex.h"
 // #include "ResourceAssignment_FiFM.h"
-#include "ResourceAssignment_ICM.h"
 
 
 
@@ -137,7 +137,7 @@ void Network::simulation () {
 	cout << "Network Load: " << Lambda / Mu << " Erlang" << endl; 
 	cout << "Blocking Probability: " << (double) NumofFailedRequests / (double) NumofRequests << endl;
 	cout << "Average Cores Used Used per Request: " << AvgCoresUsed << endl;
-	cout << "Average Transponders Used per Request: " << AvgCoresUsed << endl;
+	cout << "Average Transponders Used per Request: " << AvgTranspondersUsed << endl;
 	cout << "Average Holding Time per Request: " << AvgHoldingTime << endl;
 	cout << "Average GuardBand per Request: " << AvgGBUsed << endl;
 	cout << "Average Internal Fragmentation: " << AvgIntFrag << endl;

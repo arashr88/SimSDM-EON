@@ -1,1 +1,0 @@
-1. check if number of transponders is right
