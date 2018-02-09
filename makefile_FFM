@@ -1,8 +1,7 @@
 CC=g++-7 
 LDFLAGS=-pthread
 CFLAGS=-c -Wall
-# EXEC=test
-EXEC=Sim_FullyFlex
+EXEC=Sim_FFM
 
 SRCS=Network.cpp\
 	 ModulationFormats.cpp\
@@ -11,7 +10,7 @@ SRCS=Network.cpp\
 	 TrafficGenerator.cpp\
 	 Event.cpp\
 	 EventQueue.cpp\
-	 ResourceAssignment_FullyFlex.cpp\
+	 ResourceAssignment_FFM.cpp\
 	 RandomVariable.cpp\
 	 Topology.cpp\
 	 main.cpp
@@ -27,8 +26,8 @@ $(EXEC): $(OBJS)
 Network.o: Network.cpp Network.h EventQueue.h RoutingTable.h TrafficGenerator.h Event.h ResourceAssignment_FullyFlex.h
 	$(CC) $(CFLAGS) Network.cpp
 
-ResourceAssignment_FullyFlex.o: ResourceAssignment_FullyFlex.cpp ResourceAssignment_FullyFlex.h Event.h EventQueue.h RoutingTable.h ModulationFormats.h
-	$(CC) $(CFLAGS) ResourceAssignment_FullyFlex.cpp
+ResourceAssignment_FFM.o: ResourceAssignment_FFM.cpp ResourceAssignment_FullyFlex.h Event.h EventQueue.h RoutingTable.h ModulationFormats.h
+	$(CC) $(CFLAGS) ResourceAssignment_FFM.cpp
 
 Dijkstra.o: Dijkstra.cpp Dijkstra.h Network.h Topology.h
 	$(CC) $(CFLAGS) Dijkstra.cpp
@@ -60,3 +59,4 @@ main.o: main.cpp
 .PHONY: clean
 clean:
 	rm $(CLEANFILES)
+

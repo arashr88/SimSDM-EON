@@ -1,8 +1,8 @@
 CC=g++-7 
 LDFLAGS=-pthread
-CFLAGS=-c -Wall
-# EXEC=test
-EXEC=Sim_FullyFlex
+CFLAGS=-c 
+EXEC=Sim_FuFBF
+# EXEC=test_FuFBF
 
 SRCS=Network.cpp\
 	 ModulationFormats.cpp\
@@ -11,24 +11,21 @@ SRCS=Network.cpp\
 	 TrafficGenerator.cpp\
 	 Event.cpp\
 	 EventQueue.cpp\
-	 ResourceAssignment_FullyFlex.cpp\
+	 ResourceAssignment_FuFBF.cpp\
 	 RandomVariable.cpp\
 	 Topology.cpp\
 	 main.cpp
-
 
 OBJS=$(SRCS:.cpp=.o)
 CLEANFILES=*.o $(EXEC)
 
 all: $(OBJS) $(EXEC)
+
 $(EXEC): $(OBJS)
 	$(CC) $(LDFLAGS) $(OBJS) -o $@
 
-Network.o: Network.cpp Network.h EventQueue.h RoutingTable.h TrafficGenerator.h Event.h ResourceAssignment_FullyFlex.h
+Network.o: Network.cpp Network.h EventQueue.h RoutingTable.h TrafficGenerator.h Event.h ResourceAssignment_FuFBF.h
 	$(CC) $(CFLAGS) Network.cpp
-
-ResourceAssignment_FullyFlex.o: ResourceAssignment_FullyFlex.cpp ResourceAssignment_FullyFlex.h Event.h EventQueue.h RoutingTable.h ModulationFormats.h
-	$(CC) $(CFLAGS) ResourceAssignment_FullyFlex.cpp
 
 Dijkstra.o: Dijkstra.cpp Dijkstra.h Network.h Topology.h
 	$(CC) $(CFLAGS) Dijkstra.cpp
@@ -45,6 +42,9 @@ Event.o: Event.cpp Event.h
 EventQueue.o: EventQueue.cpp EventQueue.h Event.h
 	$(CC) $(CFLAGS) EventQueue.cpp
 
+ResourceAssignment_FuFBF.o: ResourceAssignment_FuFBF.cpp ResourceAssignment_FuFBF.h Event.h EventQueue.h RoutingTable.h ModulationFormats.h
+	$(CC) $(CFLAGS) ResourceAssignment_FuFBF.cpp
+
 RandomVariable.o: RandomVariable.cpp RandomVariable.h 
 	$(CC) $(CFLAGS) RandomVariable.cpp
 
@@ -60,3 +60,6 @@ main.o: main.cpp
 .PHONY: clean
 clean:
 	rm $(CLEANFILES)
+
+
+

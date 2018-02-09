@@ -6,10 +6,10 @@
 
 using namespace std;
 
-void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, vector<int> &PotentialSeed) {
+void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, vector<int> &PotentialSeed, string path) {
 	string IFileName, IFile, OFileName1, OFileName2, OFileName3, OFileName4, OFileName5, OFileName6, OFileName7, OFileName8, OFileName9;
-	IFile = "/home/mt1ger/Desktop/Simulator/SimSDM-EON/Plot_FullyFlex/Plot";
-	IFileName = IFile + ".txt";
+	IFile = "Plot";
+	IFileName = path + IFile + ".txt";
 	ifstream Fin (IFileName); 
 
 	string Core, Lambda, Seed, BP, NoT, CpR, HTpR, TpR, GBpR, AvgIFpR, AvgEFpR, AvgHFpR;
@@ -227,15 +227,15 @@ void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, 
 	}
 
 
-	OFileName1 = IFile + "_BP.csv";
-	OFileName2 = IFile + "_NoT.csv";
-	OFileName3 = IFile + "_CpR.csv";
-	OFileName4 = IFile + "_HTpR.csv";
-	OFileName5 = IFile + "_TpR.csv";
-	OFileName6 = IFile + "_GBpR.csv";
-	OFileName7 = IFile + "_AvgIFpR.csv";
-	OFileName8 = IFile + "_AvgEFpR.csv";
-	OFileName9 = IFile + "_AvgHFpR.csv";
+	OFileName1 = path + IFile + "_BP.csv";
+	OFileName2 = path + IFile + "_NoT.csv";
+	OFileName3 = path + IFile + "_CpR.csv";
+	OFileName4 = path + IFile + "_HTpR.csv";
+	OFileName5 = path + IFile + "_TpR.csv";
+	OFileName6 = path + IFile + "_GBpR.csv";
+	OFileName7 = path + IFile + "_AvgIFpR.csv";
+	OFileName8 = path + IFile + "_AvgEFpR.csv";
+	OFileName9 = path + IFile + "_AvgHFpR.csv";
 	
 	ofstream Fbp (OFileName1);
 	ofstream Fnot (OFileName2);

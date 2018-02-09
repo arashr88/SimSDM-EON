@@ -1,1 +1,0 @@
-1. have not figure out what need to be considered as Internal Fragmentation.

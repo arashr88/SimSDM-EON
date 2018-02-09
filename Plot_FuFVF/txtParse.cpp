@@ -8,7 +8,7 @@ using namespace std;
 
 void txtParse::parse (vector<int> &PotentialCore, vector<int> &PotentialLambda, vector<int> &PotentialSeed) {
 	string IFileName, IFile, OFileName1, OFileName2, OFileName3, OFileName4, OFileName5, OFileName6, OFileName7, OFileName8, OFileName9;
-	IFile = "/home/mt1ger/Desktop/Simulator/SimSDM-EON/Plot_FullyFlex/Plot";
+	IFile = "/home/mt1ger/Desktop/Simulator/SimSDM-EON/Plot_FuFVF/Plot";
 	IFileName = IFile + ".txt";
 	ifstream Fin (IFileName); 
 

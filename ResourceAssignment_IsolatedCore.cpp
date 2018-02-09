@@ -29,7 +29,7 @@ void ResourceAssignment::check_availability_source (unsigned int predecessor, un
 	SourceAvailableSections.clear ();
 	
 	for (int c = 0; c < network->NumofCores; c++) {
-		for (int i = 0; i < (NumofSpectralSlots - circuitRequest->OccupiedSpectralSlots + 1); i++) {
+		for (int i = 0; i < (NUMOFSPECTRALSLOTS - circuitRequest->OccupiedSpectralSlots + 1); i++) {
 			AvailableFlag = true;
 			if (network->SpectralSlots[predecessor][successor][c][i] == false) {
 				for (int j = 0; j < circuitRequest->OccupiedSpectralSlots; j++) {
@@ -89,6 +89,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 	string MF = "BPSK";
 	int TempCore = -1;
 	int TempSpecSlot = -1;
+	unsigned int mfTimes = 0;
 	unsigned int core;
 
 	CircuitRoute = routingTable.get_shortest_path (circuitRequest->Src, circuitRequest->Dest);
@@ -103,7 +104,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 	for (int i = 1; i < CircuitRoute.size (); i++) {
 		cout << "On link " << CircuitRoute[i - 1] << " to " << CircuitRoute[i] << endl;
 		for (int c = 0; c < network->NumofCores; c++) {
-			for (int j = 0; j < NumofSpectralSlots; j++) {
+			for (int j = 0; j < NUMOFSPECTRALSLOTS; j++) {
 				cout <<  network->SpectralSlots[CircuitRoute[i - 1]][CircuitRoute[i]][c][j] << ' ';
 			}
 			cout << endl;
@@ -113,7 +114,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 
 	#ifdef LOCK_use_Modulation_Formats
 	ModulationFormats modulationFormats (circuitRequest, network);
-	MF = modulationFormats.mf_chosen (CircuitRoute, &circuitRequest->OccupiedSpectralSlots, &circuitRequest->DataSize);
+	modulationFormats.mf_chosen (CircuitRoute, &circuitRequest->OccupiedSpectralSlots, &circuitRequest->DataSize, &MF, &mfTimes);
 	circuitRequest->OccupiedSpectralSlots = circuitRequest->OccupiedSpectralSlots + GB; // For GB
 	#endif
 
@@ -210,8 +211,8 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 		network->TotalCoresUsed++;
 		network->TotalGBUsed++;
 		network->TotalDataSize += circuitRequest->DataSize;
-		network->TotalSSUsed += circuitRequest->OccupiedSpectralSlots - GB; // GB is added into circuitRequest->OccupiedSpectralSlots when line 115.
-		network->TotalSSOccupied += circuitRequest->OccupiedSpectralSlots - GB + GB ;
+		network->TotalSSUsed += (circuitRequest->OccupiedSpectralSlots - GB) * mfTimes; // GB is added into circuitRequest->OccupiedSpectralSlots when line 115.
+		network->TotalSSOccupied += (circuitRequest->OccupiedSpectralSlots - GB + GB) * mfTimes ;
 	}
 
 	#ifdef DEBUG_print_resource_state_on_the_path
@@ -223,7 +224,7 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 	for (int i = 1; i < CircuitRoute.size (); i++) {
 		cout << "On link " << CircuitRoute[i - 1] << " to " << CircuitRoute[i] << endl;
 		for (int c = 0; c < network->NumofCores; c++) {
-			for (int j = 0; j < NumofSpectralSlots; j++) {
+			for (int j = 0; j < NUMOFSPECTRALSLOTS; j++) {
 				cout <<  network->SpectralSlots[CircuitRoute[i - 1]][CircuitRoute[i]][c][j] << ' ';
 			}
 			cout << endl;
@@ -246,7 +247,7 @@ void ResourceAssignment::handle_releases (CircuitRelease * circuitRelease) {
 	for (int i = 1; i < circuitRelease->CircuitRoute.size (); i++) {
 		cout << "On link " << circuitRelease->CircuitRoute[i-1] << " to " << circuitRelease->CircuitRoute[i] << endl;
 		for (int c = 0; c < network->NumofCores; c++) {
-			for (int j = 0; j < NumofSpectralSlots; j++) {
+			for (int j = 0; j < NUMOFSPECTRALSLOTS; j++) {
 				cout <<  network->SpectralSlots[circuitRelease->CircuitRoute[i - 1]][circuitRelease->CircuitRoute[i]][c][j] << ' ';
 			}
 			cout << endl;
@@ -279,7 +280,7 @@ void ResourceAssignment::handle_releases (CircuitRelease * circuitRelease) {
 	for (int i = 1; i < circuitRelease->CircuitRoute.size (); i++) {
 		cout << "On link " << circuitRelease->CircuitRoute[i-1] << " to " << circuitRelease->CircuitRoute[i] << endl;
 		for (int c = 0; c < network->NumofCores; c++) {
-			for (int j = 0; j < NumofSpectralSlots; j++) {
+			for (int j = 0; j < NUMOFSPECTRALSLOTS; j++) {
 				cout <<  network->SpectralSlots[circuitRelease->CircuitRoute[i - 1]][circuitRelease->CircuitRoute[i]][c][j] << ' ';
 			}
 			cout << endl;

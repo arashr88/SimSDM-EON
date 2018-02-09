@@ -11,7 +11,7 @@ class ModulationFormats {
 		ModulationFormats (CircuitRequest * cr, Network * net) {request = cr; network = net;}
 		~ModulationFormats () {}
 
-		string mf_chosen (vector<int> & shortestPath, unsigned int * occupiedSpectralSlots, unsigned int * dataSize);
+		void mf_chosen (vector<int> & shortestPath, unsigned int * occupiedSpectralSlots, unsigned int * dataSize, string *MF, unsigned int *mfTimes);
 
 		MF_t m_Format;
 	private:

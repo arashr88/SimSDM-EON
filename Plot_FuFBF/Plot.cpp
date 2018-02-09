@@ -25,16 +25,16 @@ int main () {
 	vector<int> Core, Lambda, Seed;
 	double Number;
 	static unsigned int NumofRequests = NUMOFREQUESTS;
-	static string Exec = "/home/mt1ger/Desktop/Simulator/SimSDM-EON/Sim_FullyFlex"; 
+	static string Exec = "/home/mt1ger/Desktop/Simulator/SimSDM-EON/Sim_FuFBF"; 
 	static string Topo = "/home/mt1ger/Desktop/Simulator/SimSDM-EON/Topology/NSF14.txt";
 	// static string Topo = "~/Desktop/Simulator/SimSDM-EON/Topology/Test.txt";
-	static string Path = "/home/mt1ger/Desktop/Simulator/SimSDM-EON/Plot_FullyFlex/";
+	static string Path = "/home/mt1ger/Desktop/Simulator/SimSDM-EON/Plot_FuFBF/";
 
 	unsigned int cnt = 0;
 	string Filename;
 	txtParse txtparse;
 
-	ofstream plot ("/home/mt1ger/Desktop/Simulator/SimSDM-EON/Plot_FullyFlex/Plot.txt");
+	ofstream plot ("/home/mt1ger/Desktop/Simulator/SimSDM-EON/Plot_FuFBF/Plot.txt");
 
 	Core.push_back (1);
 	// Core.push_back (2);

@@ -7,11 +7,12 @@
 #include "EventQueue.h"
 
 
+#define NUMOFSECTIONS 2
 #define GB 1 // Guardband
-// #define NumofSpectralSlots 128
-#define NumofSpectralSlots 16
-// #define MAX_DATASIZE_REQUEST 200 
-#define MAX_DATASIZE_REQUEST 50 
+#define NUMOFSPECTRALSLOTS 128
+// #define NUMOFSPECTRALSLOTS 16
+#define MAX_DATASIZE_REQUEST 200 
+// #define MAX_DATASIZE_REQUEST 50 
 #define BW_SPECSLOT 12.5
 
 using namespace std;
@@ -31,6 +32,7 @@ class Network {
 		double Lambda, Mu;
 		long long NumofRequests;
 		unsigned int NumofCores;
+		int SectionNumLimitation;
 
 		// Topology Variables
 		unsigned int NumofNodes; 
@@ -64,6 +66,8 @@ class Network {
 		long long NumofFailedRequests; // Number of Requests that are blocked
 		long long NumofTransponders; // Number of TranspondersUsed at a Specific Time
 		long long MaxNumofTransponders; // For one time simulation, Maximum Number of Transponders Used Simultaneously
+		int NumofSections;
+		int MaxNumofSections;
 		double SystemClock;
 
 		// Resource Variables

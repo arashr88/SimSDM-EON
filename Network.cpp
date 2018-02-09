@@ -9,9 +9,11 @@
 #include "TrafficGenerator.h"
 #include "Event.h"
 
-#include "ResourceAssignment_IsolatedCore.h"
+// #include "ResourceAssignment_FuFBF.h"
+// #include "ResourceAssignment_FuFVF.h"
+// #include "ResourceAssignment_IsolatedCore.h"
 // #include "ResourceAssignment_ICM.h"
-// #include "ResourceAssignment_FullyFlex.h"
+#include "ResourceAssignment_FullyFlex.h"
 // #include "ResourceAssignment_FixedFlex.h"
 // #include "ResourceAssignment_FiFM.h"
 
@@ -30,7 +32,7 @@ void Network::init () {
 	for (int i = 0; i < NumofNodes; i++) {
 		for (int j = 0; j < NumofNodes; j++) {
 			for (int c = 0; c < NumofCores; c++) {
-				for (int k = 0; k < NumofSpectralSlots; k++) {
+				for (int k = 0; k < NUMOFSPECTRALSLOTS; k++) {
 					SpectralSlotIndex.push_back (false);
 				}
 				CoreIndex.push_back (SpectralSlotIndex);
@@ -64,7 +66,6 @@ void Network::init () {
 		
 }
 
-// #ifdef DEBUG_enable_traffic_allocation_components
 void Network::simulation () {
 	EventQueue *eventQueue = new EventQueue ();
 	TrafficGenerator trafficGenerator (this, eventQueue);
@@ -107,6 +108,7 @@ void Network::simulation () {
 
 		eventQueue->ev_Queue.pop_front (); //This will destroy the poped Event *.
 		if (NumofTransponders > MaxNumofTransponders) MaxNumofTransponders = NumofTransponders;
+		if (NumofSections > MaxNumofSections) MaxNumofSections = NumofSections;
 
 	#ifdef DEBUG_probe_NumofDoneReqeusts_and_NumofRequests
 		cout << " " << NumofDoneRequests << " and " << NumofRequests << endl;
@@ -133,6 +135,7 @@ void Network::simulation () {
 
 
 	cout << "Max # of Transponders used: " << MaxNumofTransponders << endl;
+	cout << "Max # of Sections used for each request: " << MaxNumofSections << endl;
 	cout << "# of blocked requests is " << NumofFailedRequests << endl;
 	cout << "Network Load: " << Lambda / Mu << " Erlang" << endl; 
 	cout << "Blocking Probability: " << (double) NumofFailedRequests / (double) NumofRequests << endl;
