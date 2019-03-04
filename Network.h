@@ -6,6 +6,18 @@
 // #include "RoutingTable.h"
 #include "EventQueue.h"
 
+#define TESTING
+
+#ifdef TESTING
+#define DEBUG_print_PotentialSections
+#define DEBUG_print_SortedSections
+#define DEBUG_print_new_built_Event
+#define DEBUG_print_resource_state_on_the_path
+#define DEBUG_print_AvailableSpecSlots
+#define DEBUG_collect_EventID_of_blocked_requests //need to collaberate with debug_print_eventid_of_blocked_requests
+#define PRINT_allocation_block_release
+#define DEBUG_print_SourceAvailableSections
+#endif
 
 #define NUMOFSECTIONS 2
 #define GB 1 // Guardband

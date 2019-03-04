@@ -307,8 +307,8 @@ void ResourceAssignment::handle_requests (CircuitRequest * circuitRequest) {
 					TempNumofTransponders++;
 				}
 			}
-			if (AssignedSpectralSection.size () > network->SectionNumLimitation) AvailableFlag = false;
 		}
+		if (AssignedSpectralSection.size () > network->SectionNumLimitation) AvailableFlag = false;
 	}
 	
 

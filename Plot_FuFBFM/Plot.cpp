@@ -10,6 +10,7 @@
 
 #define NUMOFSEEDS 30
 #define NUMOFREQUESTS 100000 
+#define LTDOFSEG 4
 
 using namespace std;
 mutex mtx;
@@ -22,22 +23,6 @@ void thread_function (string cmd) {
 }
 
 int main () {
-	int MaxNumofSections = 0;
-	// For FuFBF
-	ofstream MS ("/home/mt1ger/Desktop/Simulator/SimSDM-EON/Plot_FuFBF/MaxSec.txt");
-	string Plot_Exec = "/home/mt1ger/Desktop/Simulator/SimSDM-EON/Plot_FuFBF/Plot";
-	system (Plot_Exec.c_str ());
-
-	int Temp; 
-	ifstream MaxSec;
-	MaxSec.open ("/home/mt1ger/Desktop/Simulator/SimSDM-EON/Plot_FuFBF/MaxSec.txt");
-	while (!MaxSec.eof ()) {
-		MaxSec >> Temp;
-		if (Temp > MaxNumofSections) MaxNumofSections = Temp;
-	}
-	MaxSec.close ();
-	
-
 	// For FuFBFMs
 	vector<int> Core, Lambda, Seed;
 	double Number;
@@ -73,7 +58,7 @@ int main () {
 
 	
 
-	for (unsigned int Max = 1; Max <= MaxNumofSections; Max++) {
+	for (unsigned int Max = 1; Max <= LTDOFSEG; Max++) {
 		NumofThreads = Core.size () * Lambda.size () * Seed.size ();
 		thread ThreadPointer[NumofThreads];
 

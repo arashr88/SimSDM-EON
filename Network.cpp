@@ -1,7 +1,6 @@
 // #define DEBUG_test_sequence_in_queue
 // #define DEBUG_probe_NumofDoneRequests_and_NumofRequests
 #define DEBUG_print_EventID_of_blocked_requests
- 
 
 #include <iostream> 
 #include "RoutingTable.h"
@@ -10,10 +9,11 @@
 #include "Event.h"
 
 // #include "ResourceAssignment_FuFBF.h"
-// #include "ResourceAssignment_FuFVF.h"
+#include "ResourceAssignment_FuFVF.h"
 // #include "ResourceAssignment_IsolatedCore.h"
 // #include "ResourceAssignment_ICM.h"
-#include "ResourceAssignment_FullyFlex.h"
+// #include "ResourceAssignment_FullyFlex.h"
+// #include "ResourceAssignment_FFM.h"
 // #include "ResourceAssignment_FixedFlex.h"
 // #include "ResourceAssignment_FiFM.h"
 

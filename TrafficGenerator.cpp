@@ -1,5 +1,3 @@
-// #define DEBUG_print_new_built_Event
-
 #include "TrafficGenerator.h"
 #include <cmath>
 

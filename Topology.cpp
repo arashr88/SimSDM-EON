@@ -22,8 +22,7 @@ void Topology::read_topology (void) {
 			fscanf (nettopo, "%d", &temp); 
 			HNodesWeight.push_back (temp);
 		}
-
-	network->NodesWeight.push_back (HNodesWeight);
+		network->NodesWeight.push_back (HNodesWeight);
 		HNodesWeight.clear ();
 	}
 
